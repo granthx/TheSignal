@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en" data-theme="paper">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Signal · AI, chips &amp; rockets. No nonsense.</title>
+<meta name="description" content="A no-nonsense daily paper on frontier AI, compute and space, with smart reads, a daily Sudoku and a five-minute email briefing.">
+<meta name="theme-color" content="#f6f3ea">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230b0b0c'/%3E%3Cpath d='M8 36h12l6-18 10 30 7-22 5 10h8' fill='none' stroke='%23ff3b3b' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;800&display=swap">
+<link rel="stylesheet" href="css/style.css">
+
+<!-- Optional polish. If a CDN is blocked the paper still works; animations simply fall back to CSS. -->
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script type="module" src="js/app.js?v=4"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the news</a>
+<div class="progress" aria-hidden="true"><i id="progress"></i></div>
+
+<div class="ticker" id="ticker" role="marquee" aria-label="Headlines ticker"></div>
+
+<header class="masthead" id="masthead">
+  <div class="mast-top">
+    <div class="mast-meta mono" id="mast-date">—</div>
+    <div class="mast-tools">
+      <label class="archive mono"><span class="sr">Edition</span>
+        <select id="archive" aria-label="Choose an earlier edition"></select>
+      </label>
+      <button class="chip-btn" id="theme" type="button" aria-pressed="false" title="Toggle ink / paper">◐ INK</button>
+    </div>
+  </div>
+  <h1 class="logo" id="logo" aria-label="The Signal">THE SIGNAL</h1>
+  <p class="tagline">AI, chips &amp; rockets. <em>No nonsense.</em></p>
+  <div class="mast-edition mono" id="mast-edition"></div>
+</header>
+
+<nav class="nav" id="nav" aria-label="Sections"></nav>
+
+<div class="demo-banner" id="demo-banner" hidden>
+  <strong>SAMPLE PAPER.</strong> No live edition has been built yet, so this is placeholder content.
+  Run <code>python -m app.cli run</code> or wait for the first scheduled refresh.
+</div>
+
+<main id="main" tabindex="-1">
+  <div id="front-page">
+    <section id="watch" class="watch" aria-label="Filter by company">
+      <span class="mono watch-label">YOUR WATCHLIST</span>
+      <div class="chips" id="chips"></div>
+    </section>
+
+    <div id="lead-wrap"></div>
+    <div id="top-wrap"></div>
+  </div>
+  <div id="chapters"></div>
+  <div id="empty" class="empty" hidden></div>
+  <section id="reads-wrap" class="reads" aria-labelledby="reads-title" hidden></section>
+</main>
+
+<section id="play" class="play" aria-labelledby="play-title">
+  <div class="section-head">
+    <span class="chapter-no mono">PUZZLE PAGE</span>
+    <h2 id="play-title">PLAY</h2>
+    <p class="kicker">Five minutes off the news cycle. Same puzzle for everyone each day.</p>
+  </div>
+  <div id="sudoku"></div>
+</section>
+
+<section id="subscribe" class="subscribe" aria-labelledby="sub-title">
+  <div class="sub-card">
+    <div class="sub-copy">
+      <span class="sfx">DAILY!</span>
+      <h2 id="sub-title">The whole paper, in five minutes, in your inbox.</h2>
+      <p id="sub-lede">One email a day with the three stories that matter, quick hits, and brain fuel. No ads, no filler, one-click unsubscribe.</p>
+      <button class="link-btn" id="preview-btn" type="button">See what the email looks like →</button>
+    </div>
+    <form class="sub-form" id="sub-form" novalidate>
+      <label for="sub-email">Email</label>
+      <input id="sub-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required maxlength="254">
+      <label for="sub-name">First name <span class="opt">(optional)</span></label>
+      <input id="sub-name" name="name" type="text" autocomplete="given-name" placeholder="Ada" maxlength="60">
+      <div class="hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn" id="sub-btn" type="submit">SUBSCRIBE</button>
+      <div class="bubble form-msg" id="sub-msg" role="status" aria-live="polite" hidden></div>
+    </form>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <div>
+      <div class="foot-logo">THE SIGNAL</div>
+      <p class="mono small" id="foot-stats">Compiled automatically from public feeds.</p>
+    </div>
+    <details class="small" id="foot-failed" hidden>
+      <summary class="mono">Sources that failed this run</summary>
+      <ul id="foot-failed-list"></ul>
+    </details>
+    <p class="small">Headlines link to the original reporters. Summaries are machine-written; check the source before you trade on it.</p>
+  </div>
+</footer>
+
+<dialog id="preview" aria-label="Newsletter preview">
+  <div class="dlg-bar"><strong>Tomorrow's email</strong><button type="button" class="chip-btn" id="preview-close">CLOSE ✕</button></div>
+  <iframe title="Newsletter preview" id="preview-frame" sandbox></iframe>
+</dialog>
+
+<noscript><p class="noscript">The Signal needs JavaScript to draw the paper.</p></noscript>
+</body>
+</html>
