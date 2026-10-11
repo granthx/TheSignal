@@ -1,0 +1,68 @@
+# =====================================================================================
+# Where THE SIGNAL looks. Re-read on every run. Any feed that fails is skipped (and listed
+# in the footer of the paper), so a dead URL never breaks an edition.
+#
+# Check them all at any time:   python -m app.cli check-sources
+#
+# NOTE: these URLs were written from memory of each publisher's public feeds. Run the check
+# command once and delete or fix whatever it reports as broken.
+# =====================================================================================
+
+# One Google News query per interest. Cheapest way to cover a company across hundreds of outlets.
+google_news:
+  hl: en-US
+  gl: US
+  ceid: "US:en"
+  when: 1d
+  weight: 1.0
+  queries:
+    - { q: "OpenAI" }
+    - { q: "Anthropic Claude" }
+    - { q: "Meta superintelligence" }
+    - { q: "Meta AI Zuckerberg" }
+    - { q: "SpaceX OR Starship OR Starlink" }
+    - { q: "superintelligence OR AGI" }
+    - { q: "xAI Grok" }
+    - { q: "Google DeepMind Gemini" }
+    - { q: "Nvidia AI chips" }
+    - { q: "AI data center" }
+    - { q: "AI regulation OR AI safety" }
+    - { q: "AI startup funding valuation" }
+
+# Direct feeds. weight > 1 means "trust / prioritise this outlet".
+news:
+  - { name: "OpenAI", url: "https://openai.com/news/rss.xml", weight: 1.4 }
+  - { name: "Google DeepMind", url: "https://deepmind.google/blog/rss.xml", weight: 1.3 }
+  - { name: "Google AI Blog", url: "https://blog.google/technology/ai/rss/", weight: 1.1 }
+  - { name: "NVIDIA Blog", url: "https://blogs.nvidia.com/feed/", weight: 1.0 }
+  - { name: "TechCrunch", url: "https://techcrunch.com/category/artificial-intelligence/feed/", weight: 1.1 }
+  - { name: "The Verge", url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml", weight: 1.1 }
+  - { name: "Ars Technica", url: "https://feeds.arstechnica.com/arstechnica/index", weight: 1.0 }
+  - { name: "Wired", url: "https://www.wired.com/feed/tag/ai/latest/rss", weight: 1.0 }
+  - { name: "MIT Technology Review", url: "https://www.technologyreview.com/feed/", weight: 1.1 }
+  - { name: "VentureBeat", url: "https://venturebeat.com/category/ai/feed/", weight: 0.9 }
+  - { name: "Bloomberg Tech", url: "https://feeds.bloomberg.com/technology/news.rss", weight: 1.2 }
+  - { name: "CNBC Tech", url: "https://www.cnbc.com/id/19854910/device/rss/rss.html", weight: 1.0 }
+  - { name: "SpaceNews", url: "https://spacenews.com/feed/", weight: 1.1 }
+  - { name: "NASASpaceflight", url: "https://www.nasaspaceflight.com/feed/", weight: 1.1 }
+  - { name: "Hugging Face", url: "https://huggingface.co/blog/feed.xml", weight: 0.9 }
+  - { name: "Hacker News", url: "https://hnrss.org/frontpage?points=250", weight: 0.8 }
+
+# Long reads: essays and explainers that stretch your head. Used only for the Brain Fuel section.
+reads:
+  - { name: "Quanta Magazine", url: "https://www.quantamagazine.org/feed/", weight: 1.2 }
+  - { name: "Aeon", url: "https://aeon.co/feed.rss", weight: 1.1 }
+  - { name: "Astral Codex Ten", url: "https://www.astralcodexten.com/feed", weight: 1.2 }
+  - { name: "One Useful Thing", url: "https://www.oneusefulthing.org/feed", weight: 1.1 }
+  - { name: "Interconnects", url: "https://www.interconnects.ai/feed", weight: 1.1 }
+  - { name: "Import AI", url: "https://importai.substack.com/feed", weight: 1.1 }
+  - { name: "Dwarkesh Podcast", url: "https://www.dwarkesh.com/feed", weight: 1.1 }
+  - { name: "Simon Willison", url: "https://simonwillison.net/atom/everything/", weight: 1.0 }
+  - { name: "Lil'Log", url: "https://lilianweng.github.io/index.xml", weight: 1.1 }
+  - { name: "Sam Altman", url: "https://blog.samaltman.com/posts.atom", weight: 1.0 }
+  - { name: "Farnam Street", url: "https://fs.blog/feed/", weight: 1.0 }
+  - { name: "Wait But Why", url: "https://waitbutwhy.com/feed", weight: 1.1 }
+  - { name: "Works in Progress", url: "https://worksinprogress.co/feed/", weight: 1.1 }
+  - { name: "Marginal Revolution", url: "https://marginalrevolution.com/feed", weight: 0.9 }
+  - { name: "Noahpinion", url: "https://www.noahpinion.blog/feed", weight: 0.9 }
+  - { name: "Nautilus", url: "https://nautil.us/feed/", weight: 1.0 }
