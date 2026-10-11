@@ -1,5 +1,9 @@
 # THE SIGNAL
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python: 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
+[![Repository](https://img.shields.io/badge/GitHub-granthx%2FTheSignal-black?logo=github)](https://github.com/granthx/TheSignal)
+
 A no-nonsense, manga-styled daily newspaper that only covers what you invest in and care about: frontier AI
 labs (OpenAI, Anthropic, Meta, ...), chips and compute, SpaceX and space, money and policy. It also has a
 "Brain Fuel" section of smart reads, a daily Sudoku, and a newsletter anyone can subscribe to that emails
