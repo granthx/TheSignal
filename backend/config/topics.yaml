@@ -1,0 +1,257 @@
+# =====================================================================================
+# THE SIGNAL: what counts as "relevant" to YOU. Edit freely; it is re-read on every run.
+#
+# How a story is scored:
+#   * Every keyword below is matched case-insensitively on word boundaries.
+#   * A keyword found in the TITLE counts double, in the summary once.
+#   * The story needs a total >= selection.min_score to make the paper. Raise it for a thinner
+#     paper, lower it for a fatter one.
+#   * Stories about a watchlist company get a bonus. Stories covered by several outlets get a bonus.
+#   * Noise patterns (deals, celebrity, sports, "how to watch") are dropped or demoted.
+# =====================================================================================
+
+selection:
+  min_score: 14
+  max_per_section: 6
+  editor_candidates: 28     # how many top candidates the (optional) LLM editor looks at
+  max_age_hours: 36         # news older than this never makes the paper
+  watchlist_bonus_title: 8
+  watchlist_bonus_summary: 3
+  cluster_bonus: 4          # per extra outlet covering the same story (capped at 4 extras)
+
+# Companies you are invested in. They get a boost and a clickable chip in the UI.
+# Add more (xAI, Nvidia, Google DeepMind ...) by copying the pattern.
+watchlist:
+  OpenAI:
+    match: [openai, chatgpt, "sam altman", sora, "gpt-5", "gpt-6"]
+  Anthropic:
+    match: [anthropic, "claude code", "claude opus", "claude sonnet", "claude haiku", "claude mythos", "dario amodei"]
+    bare: claude                       # only counts if one of the context words also appears
+    context: [ai, anthropic, model, llm, chatbot, agent, code]
+  Meta:
+    match: ["meta ai", "meta platforms", "meta superintelligence", "meta's ai", zuckerberg, llama, "alexandr wang"]
+    bare: meta
+    context: [ai, superintelligence, llm, model, chip, "data center", glasses, "ray-ban"]
+  SpaceX:
+    match: [spacex, starship, starlink, "falcon 9", "falcon heavy", starbase, "crew dragon"]
+  # xAI:
+  #   match: [xai, grok]
+  # Nvidia:
+  #   match: [nvidia, jensen huang]
+
+# Sections of the paper, in the order they appear. Keyword weights are per match.
+beats:
+  labs:
+    title: Frontier Labs
+    kicker: The people racing to build it
+    keywords:
+      openai: 10
+      anthropic: 10
+      "safe superintelligence": 10
+      superintelligence: 10
+      "meta superintelligence": 12
+      agi: 9
+      "artificial general intelligence": 9
+      "google deepmind": 9
+      deepmind: 8
+      xai: 8
+      grok: 6
+      deepseek: 7
+      mistral: 6
+      qwen: 5
+      moonshot: 4
+      "thinking machines": 6
+      chatgpt: 6
+      "claude code": 8
+      "claude opus": 8
+      "claude sonnet": 8
+      claude: 4
+      gemini: 4
+      llama: 5
+      "meta ai": 8
+      "gpt-5": 8
+      "gpt-6": 8
+      "frontier model": 8
+      "foundation model": 5
+      "reasoning model": 6
+      "large language model": 4
+      llm: 4
+      "ai agent": 4
+      agentic: 4
+      "open-weight": 4
+      "sam altman": 7
+      "dario amodei": 7
+      "demis hassabis": 6
+      "ilya sutskever": 7
+      "alexandr wang": 5
+  compute:
+    title: Chips & Compute
+    kicker: The physical machinery of intelligence
+    keywords:
+      nvidia: 8
+      "jensen huang": 5
+      gpu: 4
+      blackwell: 6
+      rubin: 5
+      tpu: 6
+      trainium: 6
+      tsmc: 7
+      asml: 5
+      hbm: 5
+      cerebras: 5
+      "ai chip": 7
+      "data center": 6
+      "datacenter": 6
+      stargate: 9
+      "ai infrastructure": 5
+      gigawatt: 5
+      semiconductor: 4
+      "export control": 5
+      compute: 3
+      amd: 3
+  space:
+    title: Space & Rockets
+    kicker: Leaving the planet, on schedule (mostly)
+    keywords:
+      spacex: 12
+      starship: 10
+      starbase: 8
+      starlink: 9
+      "falcon 9": 8
+      "falcon heavy": 8
+      "crew dragon": 6
+      "blue origin": 6
+      "new glenn": 6
+      "rocket lab": 5
+      artemis: 5
+      nasa: 4
+      "rocket launch": 4
+      satellite: 3
+      orbital: 3
+      mars: 3
+  bigtech:
+    title: Big Tech
+    kicker: Giants moving their weight around
+    keywords:
+      "meta platforms": 8
+      meta: 4
+      zuckerberg: 5
+      microsoft: 5
+      copilot: 4
+      google: 5
+      alphabet: 5
+      apple: 4
+      amazon: 4
+      aws: 4
+      azure: 4
+      oracle: 4
+      tesla: 3
+      "elon musk": 3
+  money:
+    title: Money & Deals
+    kicker: Where the capital is flowing
+    keywords:
+      "funding round": 6
+      "series a": 4
+      "series b": 4
+      "series c": 4
+      "series d": 4
+      valuation: 5
+      ipo: 6
+      acquisition: 4
+      acquires: 4
+      acquire: 3
+      raises: 3
+      investors: 2
+      venture: 3
+      earnings: 3
+      revenue: 2
+      billion: 2
+      trillion: 3
+  policy:
+    title: Policy & Safety
+    kicker: The rules, the risks, the arguments
+    keywords:
+      "ai safety": 7
+      "ai regulation": 7
+      "ai policy": 6
+      "ai act": 6
+      alignment: 5
+      interpretability: 6
+      "existential risk": 8
+      "red team": 3
+      regulation: 4
+      antitrust: 4
+      lawsuit: 3
+      copyright: 3
+      "executive order": 3
+      "national security": 2
+      senate: 2
+  robots:
+    title: Robots & Machines
+    kicker: Intelligence with arms and legs
+    keywords:
+      humanoid: 6
+      robotics: 4
+      robot: 3
+      optimus: 5
+      "figure ai": 6
+      waymo: 3
+      autonomous: 2
+      neuralink: 4
+
+# Generic AI vocabulary: adds to relevance but does not decide which section a story lands in.
+core:
+  ai: 3
+  "artificial intelligence": 4
+  "generative ai": 4
+  "machine learning": 2
+  "neural network": 2
+  "ai model": 4
+  "ai lab": 5
+  "ai startup": 4
+
+noise:
+  drop:   # a match anywhere in the title removes the story
+    - '\b(best|top)\s+\d*\s*(deals?|gifts?)\b'
+    - 'black friday|cyber monday|prime day|coupon|promo code|\d+% off|discount code'
+    - 'horoscope|zodiac|kardashian|taylor swift|box office|\bnfl\b|\bnba\b|premier league|cricket score'
+    - 'how to watch|where to watch|live ?stream'
+    - '\bsponsored\b|\bwebinar\b|\bpress release\b'
+    - 'giveaway|sweepstakes'
+  demote: # a match halves the score
+    - 'weekly roundup|week in review|newsletter|podcast'
+    - '\bopinion\b|\bop-ed\b'
+    - 'hands-on|review:'
+
+# Smart reads: ideas that expand how you think. Scored by keywords, depth and recency.
+reads:
+  count: 3
+  max_age_days: 21
+  repeat_window_days: 45     # never show the same essay again within this many days
+  keywords:
+    intelligence: 3
+    consciousness: 4
+    cognition: 4
+    mind: 2
+    thinking: 2
+    reasoning: 3
+    "mental model": 4
+    "first principles": 4
+    "game theory": 4
+    probability: 3
+    incentives: 3
+    complexity: 3
+    civilization: 3
+    philosophy: 3
+    mathematics: 3
+    physics: 3
+    evolution: 2
+    economics: 2
+    history: 2
+    ethics: 2
+    creativity: 3
+    scaling: 3
+    alignment: 3
+    superintelligence: 4
+    agi: 3
