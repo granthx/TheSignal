@@ -1,0 +1,44 @@
+{{ site_name|upper }} | {{ date_label }} | Edition #{{ edition_no }} | about {{ minutes }} min read
+{% if demo %}
+[SAMPLE EDITION - no live news has been fetched yet]
+{% endif %}
+
+THE BIG {{ "THREE" if big|length == 3 else big|length }}
+{% for s in big %}
+
+{{ '%02d' % s.n }}  {{ s.headline }}
+{% if s.why %}
+    Why it matters: {{ s.why }}
+{% endif %}
+    {{ s.source }}{% if s.beat_title %} | {{ s.beat_title }}{% endif %} | impact {{ s.bars }}
+    {{ s.url }}
+{% endfor %}
+{% if groups %}
+
+QUICK HITS
+{% for g in groups %}
+
+{{ g.title|upper }}
+{% for s in g.stories %}
+- {{ s.headline }} ({{ s.source }})
+  {{ s.url }}
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% if reads %}
+
+BRAIN FUEL
+{% for r in reads %}
+
+{{ r.title }}
+{{ r.hook }}
+{{ r.source }}{% if r.read_minutes %} | {{ r.read_minutes }} min{% endif %}
+
+{{ r.url }}
+{% endfor %}
+{% endif %}
+
+Play today's Sudoku: {{ play_url }}
+
+Read online: {{ view_url }}
+Unsubscribe: {{ unsubscribe_url }}

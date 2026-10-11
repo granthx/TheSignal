@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>{{ subject }}</title>
+</head>
+<body style="margin:0;padding:0;background:#e9e5da;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">{{ preheader }}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#e9e5da;">
+<tr><td align="center" style="padding:24px 12px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#fbf9f3;border:3px solid #0b0b0c;">
+
+  <tr><td style="background:#0b0b0c;padding:18px 24px 14px 24px;">
+    <div style="font-family:Impact,'Arial Black',Haettenschweiler,sans-serif;font-size:46px;line-height:1;letter-spacing:2px;color:#fbf9f3;">{{ site_name|upper }}</div>
+    <div style="font-family:'Courier New',monospace;font-size:12px;letter-spacing:1px;color:#e0dccf;padding-top:8px;">{{ date_label }} &nbsp;·&nbsp; EDITION #{{ edition_no }} &nbsp;·&nbsp; <span style="color:#ff7a7a;">≈ {{ minutes }} MIN READ</span></div>
+  </td></tr>
+  <tr><td style="height:6px;background:#c8141b;font-size:0;line-height:0;">&nbsp;</td></tr>
+{% if demo %}
+  <tr><td style="padding:10px 24px;background:#ffe14d;font-family:Arial,sans-serif;font-size:12px;color:#0b0b0c;"><strong>SAMPLE EDITION.</strong> No live news has been fetched yet.</td></tr>
+{% endif %}
+
+  <tr><td style="padding:22px 24px 4px 24px;">
+    <div style="font-family:Impact,'Arial Black',sans-serif;font-size:22px;letter-spacing:1px;color:#0b0b0c;border-bottom:3px solid #0b0b0c;padding-bottom:6px;">THE BIG {{ "THREE" if big|length == 3 else big|length }}</div>
+  </td></tr>
+{% for s in big %}
+  <tr><td style="padding:16px 24px 6px 24px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td width="44" valign="top" style="font-family:Impact,'Arial Black',sans-serif;font-size:30px;line-height:1;color:#c8141b;">{{ '%02d' % s.n }}</td>
+      <td valign="top">
+        <a href="{{ s.url }}" style="font-family:Georgia,'Times New Roman',serif;font-size:20px;line-height:1.25;font-weight:bold;color:#0b0b0c;text-decoration:none;">{{ s.headline }}</a>
+{% if s.why %}
+        <div style="margin-top:8px;padding:9px 12px;background:#ffffff;border:2px solid #0b0b0c;border-radius:10px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45;color:#222;"><strong style="color:#c8141b;">WHY IT MATTERS &nbsp;</strong>{{ s.why }}</div>
+{% endif %}
+        <div style="margin-top:7px;font-family:'Courier New',monospace;font-size:11px;letter-spacing:.5px;color:#666;">{{ s.source|upper }}{% if s.beat_title %} · {{ s.beat_title|upper }}{% endif %} · IMPACT <span style="color:#c8141b;">{{ s.bars }}</span></div>
+      </td>
+    </tr></table>
+  </td></tr>
+{% endfor %}
+
+{% if groups %}
+  <tr><td style="padding:26px 24px 4px 24px;">
+    <div style="font-family:Impact,'Arial Black',sans-serif;font-size:22px;letter-spacing:1px;color:#0b0b0c;border-bottom:3px solid #0b0b0c;padding-bottom:6px;">QUICK HITS</div>
+  </td></tr>
+{% for g in groups %}
+  <tr><td style="padding:12px 24px 2px 24px;">
+    <div style="font-family:'Courier New',monospace;font-size:11px;letter-spacing:1.5px;color:#c8141b;font-weight:bold;">{{ g.title|upper }}</div>
+{% for s in g.stories %}
+    <div style="padding:5px 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.4;"><a href="{{ s.url }}" style="color:#0b0b0c;text-decoration:underline;">{{ s.headline }}</a> <span style="color:#777;font-size:12px;">· {{ s.source }}</span></div>
+{% endfor %}
+  </td></tr>
+{% endfor %}
+{% endif %}
+
+{% if reads %}
+  <tr><td style="padding:26px 24px 4px 24px;">
+    <div style="font-family:Impact,'Arial Black',sans-serif;font-size:22px;letter-spacing:1px;color:#0b0b0c;border-bottom:3px solid #0b0b0c;padding-bottom:6px;">BRAIN FUEL</div>
+  </td></tr>
+{% for r in reads %}
+  <tr><td style="padding:12px 24px 2px 24px;">
+    <a href="{{ r.url }}" style="font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.3;font-weight:bold;color:#0b0b0c;text-decoration:none;">{{ r.title }}</a>
+    <div style="margin-top:4px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45;color:#333;">{{ r.hook }}</div>
+    <div style="margin-top:4px;font-family:'Courier New',monospace;font-size:11px;color:#666;">{{ r.source|upper }}{% if r.read_minutes %} · {{ r.read_minutes }} MIN{% endif %}</div>
+  </td></tr>
+{% endfor %}
+{% endif %}
+
+  <tr><td style="padding:28px 24px 8px 24px;" align="center">
+    <a href="{{ play_url }}" style="display:inline-block;background:#c8141b;color:#ffffff;font-family:Impact,'Arial Black',sans-serif;font-size:18px;letter-spacing:1px;text-decoration:none;padding:12px 22px;border:3px solid #0b0b0c;">PLAY TODAY'S SUDOKU &rarr;</a>
+  </td></tr>
+
+  <tr><td style="padding:22px 24px 24px 24px;border-top:3px solid #0b0b0c;margin-top:16px;">
+    <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#666;">
+      <a href="{{ view_url }}" style="color:#666;">Read the full edition on the web</a><br>
+      You get this because you subscribed to {{ site_name }}. <a href="{{ unsubscribe_url }}" style="color:#666;">Unsubscribe</a> any time, one click.
+    </div>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>
