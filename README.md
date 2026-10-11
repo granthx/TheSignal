@@ -98,10 +98,15 @@ Needs one always-on Python process (the scheduler lives inside it) and a persist
 `backend/data/` (the SQLite file holds your subscribers). A `Dockerfile` is included. Set `BASE_URL` to your public URL (it is
 used in confirm / unsubscribe links), put it behind HTTPS, and set `TRUST_PROXY=true` only if your own reverse proxy sets `X-Forwarded-For`.
 
-## Known limits
+## Contributing
 
-* The scheduler is in-process. If the server is down at send time it catches up on restart (within `SEND_GRACE_HOURS`, default 6), otherwise that day is skipped.
-* Relevance ranking is keyword scoring, tuned by hand in `topics.yaml`. It is transparent and predictable, not semantic.
-* "Impact" without an AI editor is a rank percentile, not a judgement.
-* Sudoku difficulty is the number of given clues, not a technique rating.
-* Rate limiting is per-process memory; fine for one instance.
+Contributions, feed suggestions, and improvements are welcome!
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
