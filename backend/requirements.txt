@@ -1,0 +1,8 @@
+# Deliberately small. Everything else (RSS parsing, scheduler, SMTP, LLM call) is stdlib + requests.
+starlette>=0.40
+uvicorn>=0.30
+requests>=2.31
+Jinja2>=3.1
+PyYAML>=6.0
+python-dotenv>=1.0
+tzdata>=2024.1; sys_platform == "win32"
