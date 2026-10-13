@@ -81,6 +81,11 @@ class Settings:
     # --- LLM (optional)
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-sonnet-5-5"
+    groq_api_key: str = ""
+    groq_model: str = "llama-3.3-70b-versatile"
+
+    # --- News API (optional)
+    news_api_key: str = ""
 
     @property
     def smtp_enabled(self) -> bool:
@@ -88,7 +93,7 @@ class Settings:
 
     @property
     def llm_enabled(self) -> bool:
-        return bool(self.anthropic_api_key)
+        return bool(self.groq_api_key or self.anthropic_api_key)
 
     @property
     def from_address(self) -> str:
@@ -121,4 +126,7 @@ class Settings:
             mail_from_name=_env("MAIL_FROM_NAME", "The Signal"),
             anthropic_api_key=_env("ANTHROPIC_API_KEY"),
             anthropic_model=_env("ANTHROPIC_MODEL", "claude-sonnet-5-5"),
+            groq_api_key=_env("GROQ_API_KEY"),
+            groq_model=_env("GROQ_MODEL", "llama-3.3-70b-versatile"),
+            news_api_key=_env("NEWS_API_KEY"),
         )
