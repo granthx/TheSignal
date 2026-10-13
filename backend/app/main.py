@@ -60,6 +60,9 @@ class SecurityHeaders:
                 headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
                 headers.setdefault("X-Frame-Options", "SAMEORIGIN")
                 headers.setdefault("Content-Security-Policy", CSP)
+                headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+                headers["Pragma"] = "no-cache"
+                headers["Expires"] = "0"
             await send(message)
 
         await self.app(scope, receive, wrapped)
@@ -132,6 +135,16 @@ def create_app(settings: Settings | None = None, services: Services | None = Non
             ed = await run(services.db.latest_edition) or demo_edition(settings)
         today = local_today(settings)
         return JSONResponse({**ed, "today": today, "is_today": ed.get("date") == today}, headers={"Cache-Control": "no-cache"})
+
+    async def refresh_news(request: Request):
+        try:
+            ed = await run(services.refresh)
+        except Busy:
+            return error("A refresh is already running in the background. Please wait a moment.", 409)
+        except PipelineError as exc:
+            return error(f"Could not refresh: {exc}", 502)
+        today = local_today(settings)
+        return JSONResponse({**ed, "today": today, "is_today": ed.get("date") == today, "ok": True}, headers={"Cache-Control": "no-cache"})
 
     async def editions(request: Request):
         return JSONResponse({"editions": await run(services.db.list_editions, 30)}, headers={"Cache-Control": "no-cache"})
@@ -261,6 +274,7 @@ def create_app(settings: Settings | None = None, services: Services | None = Non
         Route("/api/health", health),
         Route("/api/meta", meta),
         Route("/api/edition", edition),
+        Route("/api/refresh", refresh_news, methods=["POST"]),
         Route("/api/editions", editions),
         Route("/api/sudoku", sudoku_puzzle),
         Route("/api/email-preview", email_preview),
