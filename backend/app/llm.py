@@ -67,8 +67,54 @@ class AnthropicLLM:
         raise LLMError(f"gave up after retries ({last_error})")
 
 
+class GroqLLM:
+    enabled = True
+
+    def __init__(self, api_key: str, model: str = "llama-3.3-70b-versatile", timeout: float = 60.0, session: requests.Session | None = None):
+        self.api_key = api_key
+        self.model = model or "llama-3.3-70b-versatile"
+        self.timeout = timeout
+        self.session = session or requests.Session()
+
+    def complete(self, system: str, user: str, max_tokens: int = 4096) -> str:
+        payload = {
+            "model": self.model,
+            "max_tokens": max_tokens,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+            "response_format": {"type": "json_object"},
+        }
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json",
+        }
+        last_error = "unknown error"
+        for attempt in range(3):
+            try:
+                resp = self.session.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=self.timeout)
+            except requests.RequestException as exc:
+                last_error = f"{type(exc).__name__}: {exc}"
+            else:
+                if resp.status_code in (429, 500, 502, 503):
+                    last_error = f"HTTP {resp.status_code}"
+                elif resp.status_code >= 400:
+                    raise LLMError(f"HTTP {resp.status_code}: {resp.text[:300]}")
+                else:
+                    data = resp.json()
+                    choices = data.get("choices", [])
+                    if choices:
+                        return choices[0].get("message", {}).get("content", "")
+                    raise LLMError("empty completion from Groq")
+            time.sleep(1.5 * (attempt + 1))
+        raise LLMError(f"gave up after retries ({last_error})")
+
+
 def make_llm(settings: Settings):
-    if settings.llm_enabled:
+    if settings.groq_api_key:
+        return GroqLLM(settings.groq_api_key, settings.groq_model)
+    if settings.anthropic_api_key:
         return AnthropicLLM(settings.anthropic_api_key, settings.anthropic_model)
     return NullLLM()
 
