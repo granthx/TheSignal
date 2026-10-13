@@ -46,10 +46,16 @@ def similar(a: set[str], b: set[str], norm_a: str, norm_b: str) -> bool:
     # "GPT-5" vs "GPT-6", "$6B" vs "$10B": different facts even if the sentence shape matches.
     if anchors_a and anchors_b and not (anchors_a & anchors_b):
         return False
-    jaccard = len(a & b) / len(a | b)
+    common = len(a & b)
+    if not common:
+        return False
+    jaccard = common / len(a | b)
     threshold = 0.45 if anchors_a & anchors_b else 0.6
     if jaccard >= threshold:
         return True
+    len_a, len_b = len(norm_a), len(norm_b)
+    if (2 * min(len_a, len_b)) / max(1, len_a + len_b) < 0.88:
+        return False
     return SequenceMatcher(None, norm_a, norm_b).ratio() >= 0.88
 
 
@@ -58,6 +64,7 @@ def cluster(articles: list[Article]) -> list[Article]:
     prepared = [(a, tokens(a.title), _norm(a.title)) for a in articles]
     groups: list[list[tuple[Article, set[str], str]]] = []
     by_url: dict[str, int] = {}
+    tok_to_groups: dict[str, list[int]] = {}
 
     for item in prepared:
         article, toks, norm = item
@@ -66,16 +73,23 @@ def cluster(articles: list[Article]) -> list[Article]:
             groups[by_url[url_key]].append(item)
             continue
         placed = False
-        for idx, group in enumerate(groups):
-            _, g_toks, g_norm = group[0]
+        candidates: dict[int, None] = {}
+        for tok in toks:
+            for g_idx in tok_to_groups.get(tok, ()):
+                candidates[g_idx] = None
+        for idx in candidates:
+            _, g_toks, g_norm = groups[idx][0]
             if similar(toks, g_toks, norm, g_norm):
-                group.append(item)
+                groups[idx].append(item)
                 by_url[url_key] = idx
                 placed = True
                 break
         if not placed:
+            new_idx = len(groups)
             groups.append([item])
-            by_url[url_key] = len(groups) - 1
+            by_url[url_key] = new_idx
+            for tok in toks:
+                tok_to_groups.setdefault(tok, []).append(new_idx)
 
     reps: list[Article] = []
     for group in groups:
