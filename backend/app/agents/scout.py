@@ -12,7 +12,7 @@ import requests
 
 from ..feeds import FeedError, parse_feed
 from ..models import Article
-from ..util import clean_text
+from ..util import clean_text, parse_iso
 
 log = logging.getLogger("signal.scout")
 
@@ -79,10 +79,50 @@ def build_specs(sources_cfg: dict) -> list[SourceSpec]:
     return specs
 
 
+def fetch_newsapi(api_key: str) -> tuple[list[Article], str | None]:
+    if not api_key:
+        return [], None
+    articles: list[Article] = []
+    urls = [
+        f"https://newsapi.org/v2/top-headlines?language=en&pageSize=50&apiKey={api_key}",
+        f"https://newsapi.org/v2/everything?q=AI+OR+OpenAI+OR+Anthropic+OR+Nvidia+OR+SpaceX&language=en&sortBy=publishedAt&pageSize=50&apiKey={api_key}",
+    ]
+    headers = {"User-Agent": USER_AGENT}
+    for u in urls:
+        try:
+            resp = requests.get(u, headers=headers, timeout=(6, 15))
+            if resp.status_code == 200:
+                data = resp.json()
+                for a in data.get("articles", []):
+                    title = clean_text(a.get("title") or "")
+                    if not title or title == "[Removed]":
+                        continue
+                    source_name = (a.get("source") or {}).get("name") or "NewsAPI"
+                    published = parse_iso(a.get("publishedAt")) if a.get("publishedAt") else None
+                    articles.append(
+                        Article(
+                            title=title,
+                            url=a.get("url") or "",
+                            source=source_name,
+                            summary=clean_text(a.get("description") or ""),
+                            published=published,
+                            kind="news",
+                            weight=1.2,
+                        )
+                    )
+            else:
+                log.warning("NewsAPI returned %d: %s", resp.status_code, resp.text[:120])
+        except Exception as exc:
+            log.warning("NewsAPI fetch failed: %s", exc)
+            return articles, str(exc)
+    return articles, None
+
+
 class ScoutAgent:
-    def __init__(self, fetcher: Fetcher = http_fetch, max_workers: int = 10):
+    def __init__(self, fetcher: Fetcher = http_fetch, max_workers: int = 10, news_api_key: str = ""):
         self.fetcher = fetcher
         self.max_workers = max_workers
+        self.news_api_key = news_api_key
 
     def _scout_one(self, spec: SourceSpec) -> tuple[SourceSpec, list[Article], str | None]:
         try:
@@ -130,5 +170,11 @@ class ScoutAgent:
                 if error:
                     log.warning("source failed: %s (%s)", spec.name, error)
                 result.articles.extend(articles)
+        if self.news_api_key:
+            api_articles, err = fetch_newsapi(self.news_api_key)
+            result.report.append(
+                {"name": "NewsAPI (Global Channels)", "kind": "news", "ok": err is None, "count": len(api_articles), "error": err}
+            )
+            result.articles.extend(api_articles)
         log.info("scouted %d articles from %d/%d sources", len(result.articles), len(result.ok), len(specs))
         return result
