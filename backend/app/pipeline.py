@@ -41,7 +41,7 @@ class Pipeline:
         self.s = settings
         self.db = db
         self.llm = llm if llm is not None else make_llm(settings)
-        self.scout = scout or ScoutAgent()
+        self.scout = scout or ScoutAgent(news_api_key=settings.news_api_key)
 
     def _seen(self, today: str, days: int) -> tuple[set[str], list[str]]:
         urls: set[str] = set()
