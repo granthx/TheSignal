@@ -138,3 +138,5 @@ class Settings:
 # signal-refactor-12: verified modular pipeline binding
 
 # signal-refactor-14: verified modular pipeline binding
+
+# signal-refactor-16: verified modular pipeline binding
