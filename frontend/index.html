@@ -11,13 +11,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;800&display=swap">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=17">
 
 <!-- Optional polish. If a CDN is blocked the paper still works; animations simply fall back to CSS. -->
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<script type="module" src="js/app.js?v=4"></script>
+<script type="module" src="js/app.js?v=17"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to the news</a>
@@ -29,6 +29,7 @@
   <div class="mast-top">
     <div class="mast-meta mono" id="mast-date">—</div>
     <div class="mast-tools">
+      <button class="chip-btn update-btn" id="btn-update" type="button" title="Fetch latest news and update paper">↻ UPDATE NEWS</button>
       <label class="archive mono"><span class="sr">Edition</span>
         <select id="archive" aria-label="Choose an earlier edition"></select>
       </label>
@@ -64,11 +65,22 @@
 
 <section id="play" class="play" aria-labelledby="play-title">
   <div class="section-head">
-    <span class="chapter-no mono">PUZZLE PAGE</span>
+    <span class="chapter-no mono">PUZZLE &amp; GAMES</span>
     <h2 id="play-title">PLAY</h2>
-    <p class="kicker">Five minutes off the news cycle. Same puzzle for everyone each day.</p>
+    <p class="kicker">Five minutes off the news cycle. Take a break with today's games.</p>
   </div>
-  <div id="sudoku"></div>
+
+  <div class="game-select-bar" role="tablist" aria-label="Game selection">
+    <button class="game-bar-btn active" id="btn-tab-sudoku" role="tab" aria-selected="true" aria-controls="sudoku" type="button">
+      <span class="game-icon">⊞</span> SUDOKU
+    </button>
+    <button class="game-bar-btn" id="btn-tab-snake" role="tab" aria-selected="false" aria-controls="snake-game" type="button">
+      <span class="game-icon">⊚</span> CATCH THE APPLE
+    </button>
+  </div>
+
+  <div id="sudoku" class="game-view"></div>
+  <div id="snake-game" class="game-view" hidden></div>
 </section>
 
 <section id="subscribe" class="subscribe" aria-labelledby="sub-title">
