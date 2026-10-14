@@ -467,3 +467,24 @@ function observeNav() {
   if (navScrollHandler) {
     window.removeEventListener('scroll', navScrollHandler);
     navScrollHandler = null;
+  }
+  const nav = $('#nav');
+  if (!nav) return;
+
+  const links = [...nav.querySelectorAll('a[href^="#"]')];
+  let isClickScrolling = false;
+  let clickTimeout = null;
+
+  const getNavHeight = () => nav.getBoundingClientRect().height || 50;
+
+  const updateActiveNav = () => {
+    if (isClickScrolling) return;
+
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+    const navHeight = getNavHeight();
+
+    // 1. If at or near the very top of the page, FRONT PAGE is always active
+    if (scrollY <= 140) {
+      links.forEach((a) => {
+        a.classList.toggle('on', a.getAttribute('href') === '#front-page');
+      });
