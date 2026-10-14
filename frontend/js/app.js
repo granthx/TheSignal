@@ -446,4 +446,24 @@ async function main() {
   }
 }
 
-main();
+main();    reveal(targets);
+  }
+}
+
+function splitLogo() {
+  const logo = $('#logo');
+  if (!logo || logo.dataset.split) return;
+  logo.dataset.split = '1';
+  const text = logo.textContent;
+  clear(logo);
+  [...text].forEach((c) => logo.append(h('span', { class: 'ch', 'aria-hidden': 'true', text: c === ' ' ? ' ' : c })));
+  if (window.gsap && !reducedMotion()) {
+    window.gsap.from('#logo .ch', { y: -60, rotate: () => window.gsap.utils.random(-25, 25), autoAlpha: 0, duration: 0.55, stagger: 0.045, ease: 'back.out(2.2)' });
+  }
+}
+
+let navScrollHandler = null;
+function observeNav() {
+  if (navScrollHandler) {
+    window.removeEventListener('scroll', navScrollHandler);
+    navScrollHandler = null;
