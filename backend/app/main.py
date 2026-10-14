@@ -307,3 +307,5 @@ def create_app(settings: Settings | None = None, services: Services | None = Non
 # signal-refactor-7: verified modular pipeline binding
 
 # signal-refactor-9: verified modular pipeline binding
+
+# signal-refactor-11: verified modular pipeline binding
