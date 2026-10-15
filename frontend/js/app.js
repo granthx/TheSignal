@@ -551,3 +551,24 @@ function observeNav() {
       const href = a.getAttribute('href');
       const id = href.slice(1);
       const target = document.getElementById(id);
+      if (target) {
+        e.preventDefault();
+        isClickScrolling = true;
+        if (clickTimeout) clearTimeout(clickTimeout);
+
+        links.forEach((other) => other.classList.toggle('on', other === a));
+
+        const navHeight = getNavHeight();
+        let targetY = 0;
+        if (id !== 'front-page') {
+          const rect = target.getBoundingClientRect();
+          targetY = Math.max(0, rect.top + (window.scrollY || window.pageYOffset || 0) - navHeight - 12);
+        }
+
+        window.scrollTo({
+          top: targetY,
+          behavior: 'smooth',
+        });
+
+        clickTimeout = setTimeout(() => {
+          isClickScrolling = false;
