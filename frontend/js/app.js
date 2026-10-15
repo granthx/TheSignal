@@ -530,3 +530,24 @@ function observeNav() {
         const target = document.getElementById(id);
         if (!target || !target.isConnected || target.hidden || target.offsetHeight === 0) continue;
         const rect = target.getBoundingClientRect();
+        if (rect.top <= focalPoint && rect.top > closestDistance) {
+          closestDistance = rect.top;
+          activeLink = a;
+        }
+      }
+    }
+
+    if (!activeLink && links.length) {
+      activeLink = links[0];
+    }
+
+    links.forEach((a) => {
+      a.classList.toggle('on', a === activeLink);
+    });
+  };
+
+  links.forEach((a) => {
+    a.addEventListener('click', (e) => {
+      const href = a.getAttribute('href');
+      const id = href.slice(1);
+      const target = document.getElementById(id);
