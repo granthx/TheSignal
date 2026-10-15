@@ -593,3 +593,24 @@ function observeNav() {
 
   window.addEventListener('scroll', navScrollHandler, { passive: true });
   updateActiveNav();
+}
+
+function trackProgress() {
+  const bar = $('#progress');
+  const update = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    bar.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`;
+  };
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
+}
+
+/* ------------------------------------------------------------------ orchestration */
+function renderBody() {
+  const ed = state.edition;
+  renderLead(ed);
+  renderTop(ed);
+  renderChapters(ed);
+  renderReads(ed);
+  animateBody();
