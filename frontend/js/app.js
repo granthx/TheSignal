@@ -614,3 +614,24 @@ function renderBody() {
   renderChapters(ed);
   renderReads(ed);
   animateBody();
+}
+
+function renderEdition(ed) {
+  state.edition = ed;
+  state.filter = null;
+  renderTicker(ed);
+  renderMasthead(ed);
+  renderChips(ed);
+  renderNav(ed);
+  renderBody();
+  observeNav();
+  renderFooter(ed);
+}
+
+async function loadEdition(date) {
+  try {
+    renderEdition(await api(date ? `/api/edition?date=${encodeURIComponent(date)}` : '/api/edition'));
+  } catch (err) {
+    const empty = $('#empty');
+    empty.hidden = false;
+    clear(empty).append(h('b', { text: 'COULDN\'T LOAD THE PAPER' }), h('span', { text: err.message }));
