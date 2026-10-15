@@ -488,3 +488,24 @@ function observeNav() {
       links.forEach((a) => {
         a.classList.toggle('on', a.getAttribute('href') === '#front-page');
       });
+      return;
+    }
+
+    // 2. If scrolled to the bottom of the page, activate the last visible target
+    const scrollBottom = window.innerHeight + scrollY;
+    const totalHeight = document.documentElement.scrollHeight;
+    if (scrollBottom >= totalHeight - 60) {
+      for (let i = links.length - 1; i >= 0; i--) {
+        const id = links[i].getAttribute('href').slice(1);
+        const target = document.getElementById(id);
+        if (target && target.isConnected && !target.hidden && target.offsetHeight > 0) {
+          links.forEach((a) => a.classList.toggle('on', a === links[i]));
+          return;
+        }
+      }
+    }
+
+    // 3. Middle of page: check which visible section intersects the focal viewport line
+    const focalPoint = navHeight + 70;
+    let activeLink = null;
+
