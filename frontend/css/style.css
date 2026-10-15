@@ -547,3 +547,19 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
   display: block;
 }
 
+/* Board Overlays (100% English) */
+.snake-board-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(246, 243, 234, 0.88);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 10;
+}
+:root[data-theme="ink"] .snake-board-overlay {
+  background: rgba(15, 15, 18, 0.88);
+}
+.manga-card-panel {
