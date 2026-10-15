@@ -509,3 +509,24 @@ function observeNav() {
     const focalPoint = navHeight + 70;
     let activeLink = null;
 
+    for (const a of links) {
+      const id = a.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (!target || !target.isConnected || target.hidden || target.offsetHeight === 0) {
+        continue;
+      }
+      const rect = target.getBoundingClientRect();
+      if (rect.top <= focalPoint && rect.bottom > focalPoint) {
+        activeLink = a;
+        break;
+      }
+    }
+
+    // Fallback: closest section above focalPoint
+    if (!activeLink) {
+      let closestDistance = -Infinity;
+      for (const a of links) {
+        const id = a.getAttribute('href').slice(1);
+        const target = document.getElementById(id);
+        if (!target || !target.isConnected || target.hidden || target.offsetHeight === 0) continue;
+        const rect = target.getBoundingClientRect();
