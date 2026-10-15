@@ -468,3 +468,18 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
   main, .play { padding-inline: 14px; }
   .reads { margin-inline: -14px; padding-inline: 14px; }
 }
+.empty { text-align: center; padding: 50px 20px; border: var(--bw) dashed var(--ink); background: var(--panel); margin-bottom: 40px; }
+.empty b { font-family: var(--display); font-size: 32px; font-weight: 400; display: block; margin-bottom: 4px; }
+
+/* ------------------------------------------------------------------ play */
+.play { max-width: var(--maxw); margin: 0 auto; padding: 24px 20px 60px; }
+
+/* ------------------------------------------------------------------ game selection bars */
+.game-select-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.game-bar-btn {
+  background: var(--panel);
