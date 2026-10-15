@@ -572,3 +572,24 @@ function observeNav() {
 
         clickTimeout = setTimeout(() => {
           isClickScrolling = false;
+          updateActiveNav();
+        }, 550);
+
+        history.replaceState(null, '', `#${id}`);
+      }
+    });
+  });
+
+  let ticking = false;
+  navScrollHandler = () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        updateActiveNav();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+
+  window.addEventListener('scroll', navScrollHandler, { passive: true });
+  updateActiveNav();
