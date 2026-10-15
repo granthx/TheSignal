@@ -499,3 +499,19 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
 .game-bar-btn:hover {
   transform: translate(-1px, -1px);
   box-shadow: 4px 4px 0 var(--ink);
+  background: var(--tone);
+}
+.game-bar-btn.active {
+  background: var(--ink) !important;
+  color: var(--paper) !important;
+  border-color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  transform: translate(1px, 1px);
+}
+:root[data-theme="ink"] .game-bar-btn.active {
+  background: var(--ink) !important;
+  color: #0b0b0c !important;
+  border-color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.game-icon {
