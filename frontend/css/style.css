@@ -579,3 +579,19 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
 .panel-stamp-box {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border: 2px solid var(--ink);
+  padding: 6px 18px;
+  background: var(--paper);
+}
+.stamp-main {
+  font-family: var(--display);
+  font-size: 24px;
+  letter-spacing: .06em;
+  color: var(--ink);
+  line-height: 1.1;
+}
+.stamp-sub {
+  font-family: var(--mono);
+  font-size: 10px;
