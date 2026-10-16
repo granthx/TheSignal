@@ -627,3 +627,19 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
 /* Game Over Breakdown */
 .gameover-stamp {
   display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 12px;
+}
+.stamp-red-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 2.5px solid #c8141b;
+  color: #c8141b;
+  font-family: var(--display);
+  font-size: 22px;
