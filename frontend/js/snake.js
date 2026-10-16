@@ -86,3 +86,25 @@ export function initSnake(root, hooks = {}) {
   let animFrameId = null;
 
   // Visual FX
+  let impactBursts = []; // Radial speed-line flashes and comic text on eat
+  let motionMarks = [];  // Transient ink speed dashes behind slithering tail
+  let shakeFrames = 0;   // Screen impact tremor
+
+  /* ------------------------------------------------------------ DOM Elements */
+  // Left: Board
+  const canvas = h('canvas', { width: BASE_SIZE, height: BASE_SIZE, class: 'snake-canvas' });
+  const ctx = canvas.getContext('2d');
+  const overlayEl = h('div', { class: 'snake-board-overlay', id: 'snake-board-overlay' });
+  const boardWrap = h('div', { class: 'board-wrap snake-board-wrap' }, canvas, overlayEl);
+
+  // Right: Side Details (matching Sudoku 1-to-1)
+  const speedBtns = ['easy', 'medium', 'hard'].map((s) =>
+    h('button', {
+      type: 'button',
+      'aria-pressed': speedKey === s ? 'true' : 'false',
+      'data-speed': s,
+      onclick: () => {
+        speedKey = s;
+        prefs.set('signal.snake.speed', s);
+        speedBtns.forEach((b) => b.setAttribute('aria-pressed', b.dataset.speed === s ? 'true' : 'false'));
+        if (state === 'slithering') {
