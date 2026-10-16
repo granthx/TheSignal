@@ -675,3 +675,19 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
   gap: 6px;
   border: 1px solid var(--tone-strong);
   padding: 8px 12px;
+  background: var(--paper);
+}
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.breakdown-row.highlight {
+  font-weight: 700;
+  border-top: 1px dashed var(--ink);
+  padding-top: 4px;
+  margin-top: 2px;
+}
+
