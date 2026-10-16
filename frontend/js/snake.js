@@ -64,3 +64,25 @@ class SnakeAudio {
 }
 
 export function initSnake(root, hooks = {}) {
+  const sound = new SnakeAudio();
+  const STORAGE_KEY = 'signal.snake.best';
+  let bestScore = Number(prefs.get(STORAGE_KEY) || 0);
+
+  let speedKey = prefs.get('signal.snake.speed') || 'medium';
+  if (!SPEEDS[speedKey]) speedKey = 'medium';
+
+  const GRID_SIZE = 20; // 20x20 cells
+  const BASE_SIZE = 520; // 520x520 internal resolution
+  const CELL_SIZE = BASE_SIZE / GRID_SIZE; // 26px
+
+  let snake = [];
+  let dir = { x: 1, y: 0 };
+  let nextDir = { x: 1, y: 0 };
+  let apple = { x: 14, y: 10 };
+  let applesEaten = 0;
+  let score = 0;
+  let state = 'ready'; // 'ready' | 'slithering' | 'paused' | 'over'
+  let gameLoopTimer = null;
+  let animFrameId = null;
+
+  // Visual FX
