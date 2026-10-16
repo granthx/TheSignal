@@ -659,3 +659,19 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
 .gameover-head {
   font-family: var(--display);
   font-size: 22px;
+  letter-spacing: .04em;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.gameover-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+.editorial-breakdown {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 6px;
+  border: 1px solid var(--tone-strong);
+  padding: 8px 12px;
