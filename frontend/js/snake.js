@@ -218,3 +218,25 @@ export function initSnake(root, hooks = {}) {
     canvas.height = BASE_SIZE * dpr;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.scale(dpr, dpr);
+  }
+  resizeCanvas();
+
+  /* ------------------------------------------------------------ Overlays (100% English) */
+  function showStartOverlay() {
+    overlayEl.hidden = false;
+    clear(overlayEl).append(
+      h('div', { class: 'manga-card-panel' },
+        h('div', { class: 'panel-stamp-box' },
+          h('span', { class: 'stamp-main', text: 'CATCH THE APPLE' }),
+          h('span', { class: 'stamp-sub', text: 'NO. 001 / ARCADE DEPT.' }),
+        ),
+        h('p', { class: 'panel-prose' },
+          'An ink serpent slithers across printed newsprint.',
+          h('br'),
+          'Hunt the crimson apple. Never strike the paper borders.',
+        ),
+        h('div', { class: 'panel-action-block' },
+          h('button', {
+            class: 'btn',
+            type: 'button',
+            onclick: () => startGame(),
