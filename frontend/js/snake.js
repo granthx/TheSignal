@@ -350,3 +350,25 @@ export function initSnake(root, hooks = {}) {
   }
 
   function togglePlay() {
+    if (state === 'ready' || state === 'over') {
+      startGame();
+    } else if (state === 'slithering') {
+      pauseGame();
+    } else if (state === 'paused') {
+      resumeGame();
+    }
+  }
+
+  function startGame() {
+    resetSnake();
+    state = 'slithering';
+    overlayEl.hidden = true;
+    updateStatusText('SLITHERING');
+    playBtn.textContent = 'PAUSE';
+    runLoop();
+  }
+
+  function pauseGame() {
+    state = 'paused';
+    clearInterval(gameLoopTimer);
+    updateStatusText('PAUSED');
