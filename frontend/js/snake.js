@@ -130,3 +130,25 @@ export function initSnake(root, hooks = {}) {
   const lengthCountEl = h('div', { class: 'snake-stat-card' },
     h('span', { class: 'stat-card-num', text: '3' }),
     h('span', { class: 'stat-card-label', text: 'LENGTH' }),
+  );
+  const statusCountEl = h('div', { class: 'snake-stat-card status' },
+    h('span', { class: 'stat-card-num status-text', text: 'READY' }),
+    h('span', { class: 'stat-card-label', text: 'STATUS' }),
+  );
+  const statsRow = h('div', { class: 'snake-stats-strip' }, applesCountEl, lengthCountEl, statusCountEl);
+
+  // Action Buttons
+  const playBtn = h('button', {
+    class: 'btn sm',
+    type: 'button',
+    onclick: () => togglePlay(),
+  }, 'START');
+
+  const restartBtn = h('button', {
+    class: 'btn ghost sm',
+    type: 'button',
+    onclick: () => restartGame(),
+  }, 'RESTART');
+
+  const soundBtn = h('button', {
+    class: 'btn ghost sm',
