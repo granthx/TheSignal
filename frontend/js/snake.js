@@ -306,3 +306,25 @@ export function initSnake(root, hooks = {}) {
         ),
       )
     );
+  }
+
+  /* ------------------------------------------------------------ Game State Logic */
+  function resetSnake() {
+    snake = [
+      { x: 9, y: 10 },
+      { x: 8, y: 10 },
+      { x: 7, y: 10 },
+    ];
+    dir = { x: 1, y: 0 };
+    nextDir = { x: 1, y: 0 };
+    applesEaten = 0;
+    score = 0;
+    impactBursts = [];
+    motionMarks = [];
+    shakeFrames = 0;
+    updateDisplay();
+    spawnApple();
+  }
+
+  function spawnApple() {
+    const occupied = new Set(snake.map((s) => `${s.x},${s.y}`));
