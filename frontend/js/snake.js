@@ -196,3 +196,25 @@ export function initSnake(root, hooks = {}) {
 
   // Assemble Side Panel (Right side)
   const sidePanel = h('div', { class: 'side snake-side' },
+    h('div', { class: 'row' }, speedSeg),
+    scoreDisplay,
+    statsRow,
+    toolsRow,
+    ruleBubble,
+    tipEl,
+    dpad,
+  );
+
+  // Main 2-column layout (matching Sudoku: left is board, right is details)
+  const layout = h('div', { class: 'sudoku snake-two-col-layout' }, boardWrap, sidePanel);
+
+  root.classList.add('snake-game-wrapper');
+  clear(root).append(layout);
+
+  /* ------------------------------------------------------------ Retina / HiDPI Scaling */
+  function resizeCanvas() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = BASE_SIZE * dpr;
+    canvas.height = BASE_SIZE * dpr;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
