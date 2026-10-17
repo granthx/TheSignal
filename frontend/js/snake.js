@@ -240,3 +240,25 @@ export function initSnake(root, hooks = {}) {
             class: 'btn',
             type: 'button',
             onclick: () => startGame(),
+          }, 'START GAME [ SPACE ]'),
+          h('span', { class: 'panel-shortcut-tip', text: 'Press Arrow Keys or WASD to Slither' }),
+        ),
+      )
+    );
+  }
+
+  function showPauseOverlay() {
+    overlayEl.hidden = false;
+    clear(overlayEl).append(
+      h('div', { class: 'manga-card-panel pause' },
+        h('div', { class: 'panel-stamp-box' },
+          h('span', { class: 'stamp-main', text: 'GAME PAUSED' }),
+          h('span', { class: 'stamp-sub', text: 'TAKE A BREATH' }),
+        ),
+        h('p', { class: 'panel-prose', text: 'Press SPACE or click below to resume slithering.' }),
+        h('div', { class: 'panel-action-block' },
+          h('button', {
+            class: 'btn',
+            type: 'button',
+            onclick: () => resumeGame(),
+          }, 'RESUME [ SPACE ]'),
