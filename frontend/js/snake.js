@@ -262,3 +262,25 @@ export function initSnake(root, hooks = {}) {
             type: 'button',
             onclick: () => resumeGame(),
           }, 'RESUME [ SPACE ]'),
+        ),
+      )
+    );
+  }
+
+  function showGameOverOverlay(isHigh) {
+    overlayEl.hidden = false;
+    clear(overlayEl).append(
+      h('div', { class: 'manga-card-panel gameover' },
+        h('div', { class: 'gameover-stamp' },
+          h('span', { class: 'stamp-red-seal', text: 'END' }),
+          h('div', { class: 'gameover-title-wrap' },
+            h('span', { class: 'gameover-head', text: isHigh ? 'NEW RECORD!' : 'GAME OVER' }),
+            h('span', { class: 'gameover-sub', text: 'The serpent struck the paper frame.' }),
+          ),
+        ),
+        h('div', { class: 'editorial-breakdown' },
+          h('div', { class: 'breakdown-row' },
+            h('span', { class: 'row-label', text: 'FINAL SCORE' }),
+            h('span', { class: 'row-num', text: String(score).padStart(3, '0') }),
+          ),
+          h('div', { class: 'breakdown-row' },
