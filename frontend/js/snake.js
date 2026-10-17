@@ -152,3 +152,25 @@ export function initSnake(root, hooks = {}) {
 
   const soundBtn = h('button', {
     class: 'btn ghost sm',
+    type: 'button',
+    onclick: () => {
+      sound.enabled = !sound.enabled;
+      soundBtn.textContent = sound.enabled ? 'SOUND: ON' : 'SOUND: OFF';
+    },
+  }, 'SOUND: ON');
+
+  const toolsRow = h('div', { class: 'tools' }, playBtn, restartBtn, soundBtn);
+
+  // Comic Rule Speech Bubble
+  const ruleBubble = h('div', { class: 'bubble flip', role: 'status' },
+    h('span', { class: 'who', text: 'RULES' }),
+    'EAT. GROW. SURVIVE. Hunt crimson apples to grow. Don’t hit the ink borders or bite your own tail!',
+  );
+
+  // Key hints
+  const tipEl = h('p', { class: 'tip' },
+    'Keys: ',
+    h('kbd', { text: '↑' }), ' ',
+    h('kbd', { text: '↓' }), ' ',
+    h('kbd', { text: '←' }), ' ',
+    h('kbd', { text: '→' }), ' or ',
