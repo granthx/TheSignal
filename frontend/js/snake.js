@@ -174,3 +174,25 @@ export function initSnake(root, hooks = {}) {
     h('kbd', { text: '↓' }), ' ',
     h('kbd', { text: '←' }), ' ',
     h('kbd', { text: '→' }), ' or ',
+    h('kbd', { text: 'W' }), ' ',
+    h('kbd', { text: 'A' }), ' ',
+    h('kbd', { text: 'S' }), ' ',
+    h('kbd', { text: 'D' }), ' slither · ',
+    h('kbd', { text: 'Space' }), ' pause · ',
+    h('kbd', { text: 'R' }), ' restart.',
+  );
+
+  // Discreet D-Pad for touch screens
+  const dpadUp = h('button', { class: 'dpad-btn up', type: 'button', 'aria-label': 'Up', onclick: () => handleDir(0, -1) }, '▲');
+  const dpadLeft = h('button', { class: 'dpad-btn left', type: 'button', 'aria-label': 'Left', onclick: () => handleDir(-1, 0) }, '◀');
+  const dpadRight = h('button', { class: 'dpad-btn right', type: 'button', 'aria-label': 'Right', onclick: () => handleDir(1, 0) }, '▶');
+  const dpadDown = h('button', { class: 'dpad-btn down', type: 'button', 'aria-label': 'Down', onclick: () => handleDir(0, 1) }, '▼');
+
+  const dpad = h('div', { class: 'snake-dpad' },
+    h('div', { class: 'dpad-row center' }, dpadUp),
+    h('div', { class: 'dpad-row' }, dpadLeft, dpadRight),
+    h('div', { class: 'dpad-row center' }, dpadDown),
+  );
+
+  // Assemble Side Panel (Right side)
+  const sidePanel = h('div', { class: 'side snake-side' },
