@@ -328,3 +328,25 @@ export function initSnake(root, hooks = {}) {
 
   function spawnApple() {
     const occupied = new Set(snake.map((s) => `${s.x},${s.y}`));
+    const freeCells = [];
+    for (let x = 1; x < GRID_SIZE - 1; x++) {
+      for (let y = 1; y < GRID_SIZE - 1; y++) {
+        if (!occupied.has(`${x},${y}`)) freeCells.push({ x, y });
+      }
+    }
+    if (freeCells.length) {
+      apple = freeCells[Math.floor(Math.random() * freeCells.length)];
+    }
+  }
+
+  function handleDir(dx, dy) {
+    if (state === 'ready' || state === 'over') {
+      startGame();
+    }
+    // Prevent immediate 180-degree self reversal
+    if (dx !== 0 && dir.x !== 0) return;
+    if (dy !== 0 && dir.y !== 0) return;
+    nextDir = { x: dx, y: dy };
+  }
+
+  function togglePlay() {
