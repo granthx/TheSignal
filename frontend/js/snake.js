@@ -108,3 +108,25 @@ export function initSnake(root, hooks = {}) {
         prefs.set('signal.snake.speed', s);
         speedBtns.forEach((b) => b.setAttribute('aria-pressed', b.dataset.speed === s ? 'true' : 'false'));
         if (state === 'slithering') {
+          clearInterval(gameLoopTimer);
+          runLoop();
+        }
+      },
+    }, s.toUpperCase())
+  );
+
+  const speedSeg = h('div', { class: 'seg', role: 'group', 'aria-label': 'Speed' }, speedBtns);
+
+  const scoreDisplay = h('div', { class: 'timer snake-timer' },
+    h('span', { id: 'snake-score-num', text: '000' }),
+    h('small', { id: 'snake-best-num', text: `BEST: ${String(bestScore).padStart(3, '0')}` }),
+  );
+
+  // Stat boxes row (Apples, Length, Status)
+  const applesCountEl = h('div', { class: 'snake-stat-card' },
+    h('span', { class: 'stat-card-num', text: '0' }),
+    h('span', { class: 'stat-card-label', text: 'APPLES' }),
+  );
+  const lengthCountEl = h('div', { class: 'snake-stat-card' },
+    h('span', { class: 'stat-card-num', text: '3' }),
+    h('span', { class: 'stat-card-label', text: 'LENGTH' }),
