@@ -570,3 +570,25 @@ export function initSnake(root, hooks = {}) {
     drawCross(BASE_SIZE - 12, BASE_SIZE - 12);
 
     // 5. Double-Line Manga Panel Frame
+    ctx.strokeStyle = inkSolid;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(1.5, 1.5, BASE_SIZE - 3, BASE_SIZE - 3);
+
+    ctx.strokeStyle = isDark ? 'rgba(241,237,225,0.45)' : 'rgba(11,11,12,0.45)';
+    ctx.lineWidth = 0.8;
+    ctx.strokeRect(5.5, 5.5, BASE_SIZE - 11, BASE_SIZE - 11);
+
+    // 6. Motion Speed Marks behind tail
+    for (let i = motionMarks.length - 1; i >= 0; i--) {
+      const m = motionMarks[i];
+      m.life -= m.decay;
+      if (m.life <= 0) {
+        motionMarks.splice(i, 1);
+        continue;
+      }
+
+      ctx.save();
+      ctx.strokeStyle = inkSolid;
+      ctx.globalAlpha = Math.max(0, m.life * 0.45);
+      ctx.lineWidth = 1.2;
+
