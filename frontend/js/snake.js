@@ -372,3 +372,25 @@ export function initSnake(root, hooks = {}) {
     state = 'paused';
     clearInterval(gameLoopTimer);
     updateStatusText('PAUSED');
+    playBtn.textContent = 'RESUME';
+    showPauseOverlay();
+  }
+
+  function resumeGame() {
+    state = 'slithering';
+    overlayEl.hidden = true;
+    updateStatusText('SLITHERING');
+    playBtn.textContent = 'PAUSE';
+    runLoop();
+  }
+
+  function restartGame() {
+    clearInterval(gameLoopTimer);
+    startGame();
+  }
+
+  function gameOver() {
+    state = 'over';
+    clearInterval(gameLoopTimer);
+    shakeFrames = 8;
+    sound.playImpact();
