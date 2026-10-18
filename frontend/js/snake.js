@@ -614,3 +614,25 @@ export function initSnake(root, hooks = {}) {
     renderMangaApple(ctx, apple.x, apple.y, CELL_SIZE, appleRed, inkSolid, paperBg);
 
     // 8. Render THE INK SNAKE
+    renderMangaSnake(ctx, snake, dir, CELL_SIZE, inkSolid, paperBg);
+
+    // 9. Render Impact Bursts
+    for (let i = impactBursts.length - 1; i >= 0; i--) {
+      const b = impactBursts[i];
+      b.life -= b.decay;
+      if (b.life <= 0) {
+        impactBursts.splice(i, 1);
+        continue;
+      }
+
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, b.life);
+
+      const radius = b.maxRadius * (1 - b.life * 0.2);
+      ctx.strokeStyle = inkSolid;
+      ctx.lineWidth = 1.5;
+      for (let j = 0; j < b.lineCount; j++) {
+        const angle = (j / b.lineCount) * Math.PI * 2;
+        const r1 = radius * 0.35;
+        const r2 = radius;
+        ctx.beginPath();
