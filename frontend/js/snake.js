@@ -438,3 +438,25 @@ export function initSnake(root, hooks = {}) {
       lineCount: 12,
       maxRadius: 28,
       text: '+10',
+    });
+
+    shakeFrames = 3;
+  }
+
+  function addMotionMark(gridX, gridY, moveDir) {
+    const cx = gridX * CELL_SIZE + CELL_SIZE / 2;
+    const cy = gridY * CELL_SIZE + CELL_SIZE / 2;
+
+    motionMarks.push({
+      x: cx,
+      y: cy,
+      dir: { ...moveDir },
+      life: 1.0,
+      decay: 0.065,
+    });
+  }
+
+  /* ------------------------------------------------------------ Game Loop Tick */
+  function tick() {
+    dir = { ...nextDir };
+    const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
