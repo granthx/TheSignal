@@ -460,3 +460,25 @@ export function initSnake(root, hooks = {}) {
   function tick() {
     dir = { ...nextDir };
     const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+
+    // Wall collision
+    if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+      gameOver();
+      return;
+    }
+
+    // Self collision
+    if (snake.some((s) => s.x === head.x && s.y === head.y)) {
+      gameOver();
+      return;
+    }
+
+    snake.unshift(head);
+
+    // Apple collision
+    let grew = false;
+    if (head.x === apple.x && head.y === apple.y) {
+      applesEaten++;
+      score += 10;
+      grew = true;
+      sound.playBite();
