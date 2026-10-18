@@ -504,3 +504,25 @@ export function initSnake(root, hooks = {}) {
   /* ------------------------------------------------------------ 60FPS Renderer */
   function draw() {
     const isDark = document.documentElement.dataset.theme === 'ink';
+
+    // Palette Tokens
+    const paperBg = isDark ? '#0f0f12' : '#f6f3ea';
+    const inkSolid = isDark ? '#f1ede1' : '#0b0b0c';
+    const inkFaint = isDark ? 'rgba(241, 237, 225, 0.06)' : 'rgba(11, 11, 12, 0.06)';
+    const screentoneDot = isDark ? 'rgba(241, 237, 225, 0.09)' : 'rgba(11, 11, 12, 0.08)';
+    const appleRed = isDark ? '#ff3b3b' : '#c8141b'; // Sole vivid crimson accent
+
+    ctx.save();
+
+    // 0. Screen shake on impact
+    if (shakeFrames > 0) {
+      const ox = (Math.random() - 0.5) * 3;
+      const oy = (Math.random() - 0.5) * 3;
+      ctx.translate(ox, oy);
+      shakeFrames--;
+    }
+
+    // 1. Newsprint Ground
+    ctx.fillStyle = paperBg;
+    ctx.fillRect(0, 0, BASE_SIZE, BASE_SIZE);
+
