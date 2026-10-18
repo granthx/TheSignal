@@ -658,3 +658,25 @@ export function initSnake(root, hooks = {}) {
   }
 
   /* ------------------------------------------------------------ Apple: The Sole Red Accent */
+  function renderMangaApple(c, gx, gy, cellSize, redColor, inkColor, paperColor) {
+    const cx = gx * cellSize + cellSize / 2;
+    const cy = gy * cellSize + cellSize / 2;
+    const r = 8.5;
+
+    c.save();
+
+    // Subtle drop shadow in ink
+    c.fillStyle = 'rgba(0, 0, 0, 0.15)';
+    c.beginPath();
+    c.ellipse(cx, cy + r + 1, r * 0.8, 2.2, 0, 0, Math.PI * 2);
+    c.fill();
+
+    // Apple Body: Solid Blood-Red with crisp manga contour
+    c.fillStyle = redColor;
+    c.strokeStyle = inkColor;
+    c.lineWidth = 1.8;
+
+    c.beginPath();
+    c.arc(cx - r * 0.35, cy - 1, r * 0.82, Math.PI * 0.8, Math.PI * 2.1);
+    c.arc(cx + r * 0.35, cy - 1, r * 0.82, Math.PI * 0.9, Math.PI * 2.2);
+    c.closePath();
