@@ -592,3 +592,25 @@ export function initSnake(root, hooks = {}) {
       ctx.globalAlpha = Math.max(0, m.life * 0.45);
       ctx.lineWidth = 1.2;
 
+      if (m.dir.x !== 0) {
+        ctx.beginPath();
+        ctx.moveTo(m.x - 7, m.y - 3);
+        ctx.lineTo(m.x + 7, m.y - 3);
+        ctx.moveTo(m.x - 4, m.y + 3);
+        ctx.lineTo(m.x + 6, m.y + 3);
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(m.x - 3, m.y - 7);
+        ctx.lineTo(m.x - 3, m.y + 7);
+        ctx.moveTo(m.x + 3, m.y - 4);
+        ctx.lineTo(m.x + 3, m.y + 6);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // 7. Render VIVID CRIMSON APPLE
+    renderMangaApple(ctx, apple.x, apple.y, CELL_SIZE, appleRed, inkSolid, paperBg);
+
+    // 8. Render THE INK SNAKE
