@@ -680,3 +680,25 @@ export function initSnake(root, hooks = {}) {
     c.arc(cx - r * 0.35, cy - 1, r * 0.82, Math.PI * 0.8, Math.PI * 2.1);
     c.arc(cx + r * 0.35, cy - 1, r * 0.82, Math.PI * 0.9, Math.PI * 2.2);
     c.closePath();
+    c.fill();
+    c.stroke();
+
+    // White Crescent Highlight Reflection (top-left)
+    c.fillStyle = paperColor;
+    c.beginPath();
+    c.arc(cx - r * 0.38, cy - r * 0.38, 2, 0, Math.PI * 2);
+    c.fill();
+
+    // Black Ink Curved Stem
+    c.strokeStyle = inkColor;
+    c.lineWidth = 1.8;
+    c.lineCap = 'round';
+    c.beginPath();
+    c.moveTo(cx, cy - r * 0.7);
+    c.quadraticCurveTo(cx - 2, cy - r * 1.3, cx - 1, cy - r * 1.5);
+    c.stroke();
+
+    // Black Ink Tiny Leaf
+    c.fillStyle = inkColor;
+    c.beginPath();
+    c.ellipse(cx + 3.5, cy - r * 1.1, 3.5, 1.8, Math.PI / 4, 0, Math.PI * 2);
