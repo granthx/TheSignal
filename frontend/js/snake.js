@@ -482,3 +482,25 @@ export function initSnake(root, hooks = {}) {
       score += 10;
       grew = true;
       sound.playBite();
+      triggerAppleImpact(head.x, head.y);
+      spawnApple();
+      updateDisplay();
+    }
+
+    if (!grew) {
+      const vacated = snake.pop();
+      addMotionMark(vacated.x, vacated.y, dir);
+    } else {
+      const tail = snake[snake.length - 1];
+      addMotionMark(tail.x, tail.y, dir);
+    }
+  }
+
+  function runLoop() {
+    clearInterval(gameLoopTimer);
+    gameLoopTimer = setInterval(tick, SPEEDS[speedKey] || 90);
+  }
+
+  /* ------------------------------------------------------------ 60FPS Renderer */
+  function draw() {
+    const isDark = document.documentElement.dataset.theme === 'ink';
