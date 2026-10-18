@@ -526,3 +526,25 @@ export function initSnake(root, hooks = {}) {
     ctx.fillStyle = paperBg;
     ctx.fillRect(0, 0, BASE_SIZE, BASE_SIZE);
 
+    // 2. Screentone Dot Matrix
+    ctx.fillStyle = screentoneDot;
+    const dotSpacing = 13;
+    for (let x = 6; x < BASE_SIZE; x += dotSpacing) {
+      for (let y = 6; y < BASE_SIZE; y += dotSpacing) {
+        ctx.beginPath();
+        ctx.arc(x, y, 0.75, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // 3. Editorial Grid Lines
+    ctx.strokeStyle = inkFaint;
+    ctx.lineWidth = 0.6;
+    for (let i = 1; i < GRID_SIZE; i++) {
+      const pos = i * CELL_SIZE;
+      ctx.beginPath();
+      ctx.moveTo(pos, 0);
+      ctx.lineTo(pos, BASE_SIZE);
+      ctx.stroke();
+
+      ctx.beginPath();
