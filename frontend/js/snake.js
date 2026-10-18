@@ -416,3 +416,25 @@ export function initSnake(root, hooks = {}) {
   function updateDisplay() {
     const scoreEl = scoreDisplay.querySelector('#snake-score-num');
     const bestEl = scoreDisplay.querySelector('#snake-best-num');
+    const applesEl = applesCountEl.querySelector('.stat-card-num');
+    const lengthEl = lengthCountEl.querySelector('.stat-card-num');
+
+    if (scoreEl) scoreEl.textContent = String(score).padStart(3, '0');
+    if (bestEl) bestEl.textContent = `BEST: ${String(bestScore).padStart(3, '0')}`;
+    if (applesEl) applesEl.textContent = String(applesEaten);
+    if (lengthEl) lengthEl.textContent = String(snake.length);
+  }
+
+  /* ------------------------------------------------------------ Visual Impact Effects (100% English) */
+  function triggerAppleImpact(gridX, gridY) {
+    const cx = gridX * CELL_SIZE + CELL_SIZE / 2;
+    const cy = gridY * CELL_SIZE + CELL_SIZE / 2;
+
+    impactBursts.push({
+      x: cx,
+      y: cy,
+      life: 1.0,
+      decay: 0.055,
+      lineCount: 12,
+      maxRadius: 28,
+      text: '+10',
