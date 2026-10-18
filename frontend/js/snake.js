@@ -548,3 +548,25 @@ export function initSnake(root, hooks = {}) {
       ctx.stroke();
 
       ctx.beginPath();
+      ctx.moveTo(0, pos);
+      ctx.lineTo(BASE_SIZE, pos);
+      ctx.stroke();
+    }
+
+    // 4. Registration Crosshairs (+) in corners
+    ctx.strokeStyle = isDark ? 'rgba(241,237,225,0.25)' : 'rgba(11,11,12,0.25)';
+    ctx.lineWidth = 1;
+    const drawCross = (cx, cy) => {
+      ctx.beginPath();
+      ctx.moveTo(cx - 5, cy);
+      ctx.lineTo(cx + 5, cy);
+      ctx.moveTo(cx, cy - 5);
+      ctx.lineTo(cx, cy + 5);
+      ctx.stroke();
+    };
+    drawCross(12, 12);
+    drawCross(BASE_SIZE - 12, 12);
+    drawCross(12, BASE_SIZE - 12);
+    drawCross(BASE_SIZE - 12, BASE_SIZE - 12);
+
+    // 5. Double-Line Manga Panel Frame
