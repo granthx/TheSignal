@@ -394,3 +394,25 @@ export function initSnake(root, hooks = {}) {
     clearInterval(gameLoopTimer);
     shakeFrames = 8;
     sound.playImpact();
+
+    const isHigh = score > bestScore;
+    if (isHigh) {
+      bestScore = score;
+      prefs.set(STORAGE_KEY, score);
+      if (hooks.confetti) hooks.confetti({ particleCount: 50, spread: 70, origin: { y: 0.6 } });
+    }
+
+    updateDisplay();
+    updateStatusText('GAME OVER');
+    playBtn.textContent = 'START';
+    showGameOverOverlay(isHigh);
+  }
+
+  function updateStatusText(txt) {
+    const statusEl = statusCountEl.querySelector('.stat-card-num');
+    if (statusEl) statusEl.textContent = txt;
+  }
+
+  function updateDisplay() {
+    const scoreEl = scoreDisplay.querySelector('#snake-score-num');
+    const bestEl = scoreDisplay.querySelector('#snake-best-num');
