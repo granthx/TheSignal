@@ -636,3 +636,25 @@ export function initSnake(root, hooks = {}) {
         const r1 = radius * 0.35;
         const r2 = radius;
         ctx.beginPath();
+        ctx.moveTo(b.x + Math.cos(angle) * r1, b.y + Math.sin(angle) * r1);
+        ctx.lineTo(b.x + Math.cos(angle) * r2, b.y + Math.sin(angle) * r2);
+        ctx.stroke();
+      }
+
+      // English floating pop: "+10"
+      ctx.font = 'bold 15px "Bangers", "DM Mono", sans-serif';
+      ctx.fillStyle = appleRed;
+      ctx.strokeStyle = paperBg;
+      ctx.lineWidth = 3;
+      const textX = b.x - 10;
+      const textY = b.y - 12 - (1 - b.life) * 12;
+      ctx.strokeText(b.text, textX, textY);
+      ctx.fillText(b.text, textX, textY);
+
+      ctx.restore();
+    }
+
+    ctx.restore();
+  }
+
+  /* ------------------------------------------------------------ Apple: The Sole Red Accent */
