@@ -856,3 +856,60 @@ export function initSnake(root, hooks = {}) {
         togglePlay();
         break;
       case 'r':
+      case 'R':
+        e.preventDefault();
+        restartGame();
+        break;
+    }
+  };
+
+  // Touch Swipe Gesture support on Canvas
+  let touchStartX = 0;
+  let touchStartY = 0;
+  const onTouchStart = (e) => {
+    if (e.touches && e.touches[0]) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }
+  };
+
+  const onTouchEnd = (e) => {
+    if (!touchStartX || !touchStartY) return;
+    const endX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : 0;
+    const endY = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientY : 0;
+    const dx = endX - touchStartX;
+    const dy = endY - touchStartY;
+
+    if (Math.abs(dx) > 25 || Math.abs(dy) > 25) {
+      if (Math.abs(dx) > Math.abs(dy)) {
+        handleDir(dx > 0 ? 1 : -1, 0);
+      } else {
+        handleDir(0, dy > 0 ? 1 : -1);
+      }
+    }
+    touchStartX = 0;
+    touchStartY = 0;
+  };
+
+  window.addEventListener('keydown', onKey);
+  canvas.addEventListener('touchstart', onTouchStart, { passive: true });
+  canvas.addEventListener('touchend', onTouchEnd, { passive: true });
+
+  // Initial setup
+  resetSnake();
+  showStartOverlay();
+  renderLoop();
+
+  return {
+    destroy: () => {
+      clearInterval(gameLoopTimer);
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+      window.removeEventListener('keydown', onKey);
+      canvas.removeEventListener('touchstart', onTouchStart);
+      canvas.removeEventListener('touchend', onTouchEnd);
+    },
+    pause: () => {
+      if (state === 'slithering') pauseGame();
+    },
+  };
+}
