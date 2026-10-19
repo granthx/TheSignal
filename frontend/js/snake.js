@@ -812,3 +812,25 @@ export function initSnake(root, hooks = {}) {
       }
 
       c.restore();
+    }
+  }
+
+  /* ------------------------------------------------------------ 60FPS Render Loop */
+  function renderLoop() {
+    draw();
+    animFrameId = requestAnimationFrame(renderLoop);
+  }
+
+  /* ------------------------------------------------------------ Keyboard & Touch Input */
+  const onKey = (e) => {
+    const snakePane = document.getElementById('snake-game');
+    if (!snakePane || snakePane.hidden) return;
+
+    switch (e.key) {
+      case 'ArrowUp':
+      case 'w':
+      case 'W':
+        e.preventDefault();
+        handleDir(0, -1);
+        break;
+      case 'ArrowDown':
