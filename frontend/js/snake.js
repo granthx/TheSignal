@@ -746,3 +746,25 @@ export function initSnake(root, hooks = {}) {
         c.fill();
 
         // Sharp white paper slit eye
+        c.fillStyle = paperColor;
+        c.beginPath();
+        c.moveTo(hw - 5, -3.5);
+        c.lineTo(hw - 1, -1.8);
+        c.lineTo(hw - 5, -1.2);
+        c.closePath();
+        c.fill();
+
+        // Eye glint
+        c.fillStyle = paperColor;
+        c.beginPath();
+        c.arc(hw - 3, -2.5, 0.7, 0, Math.PI * 2);
+        c.fill();
+
+        // Crown hatching
+        c.strokeStyle = paperColor;
+        c.lineWidth = 0.8;
+        c.beginPath();
+        c.moveTo(-2, -hw + 5);
+        c.lineTo(2, -hw + 5);
+        c.stroke();
+
