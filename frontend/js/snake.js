@@ -790,3 +790,25 @@ export function initSnake(root, hooks = {}) {
         c.fill();
 
       } else {
+        // === BODY: SEGMENTED INK TILES ===
+        const size = cellSize - 4; // 22px
+        const hs = size / 2;
+
+        c.fillStyle = inkColor;
+        c.fillRect(cx - hs, cy - hs, size, size);
+
+        c.strokeStyle = paperColor;
+        c.lineWidth = 1;
+        c.strokeRect(cx - hs + 0.5, cy - hs + 0.5, size - 1, size - 1);
+
+        if (i % 2 === 0) {
+          c.strokeStyle = paperColor;
+          c.lineWidth = 0.7;
+          c.beginPath();
+          c.moveTo(cx - 3, cy - 3);
+          c.lineTo(cx + 3, cy + 3);
+          c.stroke();
+        }
+      }
+
+      c.restore();
