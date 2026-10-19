@@ -834,3 +834,25 @@ export function initSnake(root, hooks = {}) {
         handleDir(0, -1);
         break;
       case 'ArrowDown':
+      case 's':
+      case 'S':
+        e.preventDefault();
+        handleDir(0, 1);
+        break;
+      case 'ArrowLeft':
+      case 'a':
+      case 'A':
+        e.preventDefault();
+        handleDir(-1, 0);
+        break;
+      case 'ArrowRight':
+      case 'd':
+      case 'D':
+        e.preventDefault();
+        handleDir(1, 0);
+        break;
+      case ' ':
+        e.preventDefault();
+        togglePlay();
+        break;
+      case 'r':
