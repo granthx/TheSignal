@@ -723,3 +723,19 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
 .snake-stat-card {
   flex: 1;
   min-width: 78px;
+  background: var(--panel);
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.snake-stat-card.status {
+  flex: 1.4;
+  min-width: 100px;
+}
+.stat-card-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
