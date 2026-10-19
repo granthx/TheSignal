@@ -724,3 +724,25 @@ export function initSnake(root, hooks = {}) {
         // === HEAD: SHARP GRAPHIC MANGA SERPENT ===
         let angle = 0;
         if (curDir.x === 1) angle = 0;
+        else if (curDir.x === -1) angle = Math.PI;
+        else if (curDir.y === 1) angle = Math.PI / 2;
+        else if (curDir.y === -1) angle = -Math.PI / 2;
+
+        c.translate(cx, cy);
+        c.rotate(angle);
+
+        const w = cellSize - 4; // 22px
+        const hw = w / 2;
+
+        c.beginPath();
+        c.moveTo(-hw, -hw + 2);
+        c.lineTo(hw - 3, -hw + 1);
+        c.lineTo(hw + 2, 0);
+        c.lineTo(hw - 3, hw - 1);
+        c.lineTo(-hw, hw - 2);
+        c.closePath();
+
+        c.fillStyle = inkColor;
+        c.fill();
+
+        // Sharp white paper slit eye
