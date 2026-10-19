@@ -768,3 +768,25 @@ export function initSnake(root, hooks = {}) {
         c.lineTo(2, -hw + 5);
         c.stroke();
 
+      } else if (isTail) {
+        // === TAIL: TAPERED SUMI BLADE ===
+        const prev = segments[i - 1];
+        const tdx = cx - (prev.x * cellSize + cellSize / 2);
+        const tdy = cy - (prev.y * cellSize + cellSize / 2);
+        const tAngle = Math.atan2(tdy, tdx);
+
+        c.translate(cx, cy);
+        c.rotate(tAngle);
+
+        const tw = (cellSize - 6) / 2;
+
+        c.beginPath();
+        c.moveTo(-tw, -tw);
+        c.lineTo(tw * 1.5, 0);
+        c.lineTo(-tw, tw);
+        c.closePath();
+
+        c.fillStyle = inkColor;
+        c.fill();
+
+      } else {
