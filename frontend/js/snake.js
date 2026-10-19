@@ -702,3 +702,25 @@ export function initSnake(root, hooks = {}) {
     c.fillStyle = inkColor;
     c.beginPath();
     c.ellipse(cx + 3.5, cy - r * 1.1, 3.5, 1.8, Math.PI / 4, 0, Math.PI * 2);
+    c.fill();
+
+    c.restore();
+  }
+
+  /* ------------------------------------------------------------ Snake: Living Ink on Paper */
+  function renderMangaSnake(c, segments, curDir, cellSize, inkColor, paperColor) {
+    if (!segments || segments.length === 0) return;
+
+    for (let i = segments.length - 1; i >= 0; i--) {
+      const seg = segments[i];
+      const cx = seg.x * cellSize + cellSize / 2;
+      const cy = seg.y * cellSize + cellSize / 2;
+      const isHead = i === 0;
+      const isTail = i === segments.length - 1;
+
+      c.save();
+
+      if (isHead) {
+        // === HEAD: SHARP GRAPHIC MANGA SERPENT ===
+        let angle = 0;
+        if (curDir.x === 1) angle = 0;
