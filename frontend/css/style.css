@@ -787,3 +787,19 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
   font-size: 18px;
   line-height: 1;
   display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform .05s, box-shadow .05s, background .1s;
+}
+.dpad-btn:hover {
+  background: var(--yellow);
+  color: #0b0b0c;
+}
+.dpad-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
