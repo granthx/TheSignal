@@ -803,3 +803,19 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
   box-shadow: 1px 1px 0 var(--ink);
 }
 
+@media (max-width: 860px) {
+  .snake-two-col-layout {
+    grid-template-columns: 1fr;
+  }
+  .snake-board-wrap {
+    max-width: 100%;
+  }
+}
+
+.sudoku { display: grid; grid-template-columns: minmax(0, 560px) 1fr; gap: 34px; align-items: start; }
+.board-wrap { position: relative; }
+.board {
+  display: grid; grid-template-columns: repeat(9, 1fr); border: 5px solid var(--ink); background: var(--panel);
+  box-shadow: var(--shadow-lg); aspect-ratio: 1; user-select: none; -webkit-user-select: none; touch-action: manipulation;
+}
+.cell {
