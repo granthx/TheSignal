@@ -933,3 +933,5 @@ export function initSnake(root, hooks = {}) {
 // snake-render-optimization-101: polished frame budget
 
 // snake-render-optimization-103: polished frame budget
+
+// snake-render-optimization-105: polished frame budget
