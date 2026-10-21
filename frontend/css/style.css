@@ -867,3 +867,19 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
 .pad button:disabled { opacity: .25; cursor: not-allowed; box-shadow: none; }
 .pad button small { position: absolute; right: 3px; bottom: 1px; font-family: var(--mono); font-size: 9px; color: var(--muted); }
 .tools { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn {
+  display: inline-block; cursor: pointer; font-family: var(--display); font-size: 20px; letter-spacing: .07em; line-height: 1.1;
+  background: var(--red); color: var(--on-red); border: 3px solid var(--ink); padding: 8px 20px 6px; box-shadow: 4px 4px 0 var(--ink); text-decoration: none;
+  transition: transform .08s, box-shadow .08s;
+}
+.btn:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--ink); }
+.btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
+.btn:disabled { opacity: .6; cursor: progress; }
+.btn.ghost { background: var(--panel); color: var(--ink); }
+.btn.ghost[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.btn.sm { font-size: 17px; padding: 5px 14px 3px; box-shadow: 3px 3px 0 var(--ink); }
+.tip { margin: 0; font-size: 13px; color: var(--muted); }
+.tip kbd { font-family: var(--mono); border: 1.5px solid var(--ink); padding: 0 5px; background: var(--panel); font-size: 11px; }
+
+/* ------------------------------------------------------------------ subscribe */
+.subscribe { padding: 10px 20px 70px; }
