@@ -635,3 +635,5 @@ async function loadEdition(date) {
     const empty = $('#empty');
     empty.hidden = false;
     clear(empty).append(h('b', { text: 'COULDN\'T LOAD THE PAPER' }), h('span', { text: err.message }));
+
+/* signal-perf-110: touch/scroll optimization */
