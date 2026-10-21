@@ -851,3 +851,19 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
 @keyframes pop { from { transform: translate(-50%, -50%) rotate(-4deg) scale(.2); opacity: 0; } }
 
 .side { display: flex; flex-direction: column; gap: 18px; }
+.seg { display: inline-flex; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); background: var(--panel); }
+.seg button { background: transparent; border: 0; padding: 4px 16px; cursor: pointer; font-family: var(--display); font-size: 20px; letter-spacing: .06em; border-right: 2px solid var(--ink); }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+.timer { font-family: var(--display); font-size: 44px; letter-spacing: .06em; line-height: 1; }
+.timer small { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .04em; margin-left: 8px; }
+.pad { display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; }
+.pad button {
+  position: relative; aspect-ratio: 1; background: var(--panel); border: 3px solid var(--ink); cursor: pointer; box-shadow: 3px 3px 0 var(--ink);
+  font-family: var(--display); font-size: clamp(1.2rem, 3.6vw, 1.9rem); line-height: 1; padding: 0; transition: transform .06s, box-shadow .06s;
+}
+.pad button:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.pad button:disabled { opacity: .25; cursor: not-allowed; box-shadow: none; }
+.pad button small { position: absolute; right: 3px; bottom: 1px; font-family: var(--mono); font-size: 9px; color: var(--muted); }
+.tools { display: flex; flex-wrap: wrap; gap: 10px; }
