@@ -883,3 +883,19 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
 
 /* ------------------------------------------------------------------ subscribe */
 .subscribe { padding: 10px 20px 70px; }
+.sub-card {
+  max-width: var(--maxw); margin: 0 auto; border: 5px solid var(--ink); box-shadow: var(--shadow-lg); background: var(--panel);
+  display: grid; grid-template-columns: 1.1fr 1fr; overflow: hidden;
+}
+.sub-copy { padding: 34px 32px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start;
+  background-image: radial-gradient(var(--tone-strong) 1.2px, transparent 1.6px); background-size: 7px 7px; }
+.sub-copy h2 { font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 4.6vw, 3.1rem); line-height: 1.04; margin: 0; letter-spacing: .02em; }
+.sub-copy p { margin: 0; max-width: 46ch; }
+.link-btn { background: none; border: 0; padding: 0; cursor: pointer; font-family: var(--mono); font-size: 13px; text-decoration: underline; text-underline-offset: 4px; }
+.sub-form { padding: 34px 32px; border-left: 5px solid var(--ink); display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+.sub-form label { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.sub-form .opt { color: var(--muted); text-transform: none; }
+.sub-form input[type="email"], .sub-form input[type="text"] {
+  width: 100%; background: var(--paper); border: 3px solid var(--ink); padding: 11px 12px; font-size: 16px; border-radius: 0; margin-bottom: 8px;
+}
+.sub-form input:focus { outline: 3px solid var(--blue); outline-offset: 2px; }
