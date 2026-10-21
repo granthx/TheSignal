@@ -637,3 +637,5 @@ async function loadEdition(date) {
     clear(empty).append(h('b', { text: 'COULDN\'T LOAD THE PAPER' }), h('span', { text: err.message }));
 
 /* signal-perf-110: touch/scroll optimization */
+
+/* signal-perf-112: touch/scroll optimization */
