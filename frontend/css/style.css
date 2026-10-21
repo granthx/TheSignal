@@ -899,3 +899,5 @@ dialog iframe { flex: 1; width: 100%; border: 0; background: #e9e5da; }
   width: 100%; background: var(--paper); border: 3px solid var(--ink); padding: 11px 12px; font-size: 16px; border-radius: 0; margin-bottom: 8px;
 }
 .sub-form input:focus { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+/* signal-perf-111: touch/scroll optimization */
