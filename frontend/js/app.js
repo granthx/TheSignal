@@ -87,7 +87,6 @@ function renderMasthead(ed) {
   if (stats.published) bits.push(`${stats.published} STORIES`);
   if (stats.articles_seen) bits.push(`FROM ${stats.articles_seen} SCANNED`);
   $('#mast-edition').textContent = bits.join('  ·  ');
-  $('#demo-banner').hidden = ed.mode !== 'demo';
   document.title = `The Signal · ${fmtDate(ed.date)}`;
 }
 
