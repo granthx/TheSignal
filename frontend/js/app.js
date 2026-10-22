@@ -639,3 +639,5 @@ async function loadEdition(date) {
 /* signal-perf-110: touch/scroll optimization */
 
 /* signal-perf-112: touch/scroll optimization */
+
+/* signal-perf-114: touch/scroll optimization */
