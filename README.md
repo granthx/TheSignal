@@ -1,112 +1,75 @@
 # THE SIGNAL
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python: 3.11+](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
-[![Repository](https://img.shields.io/badge/GitHub-granthx%2FTheSignal-black?logo=github)](https://github.com/granthx/TheSignal)
+> **AI, chips & rockets. *No nonsense.***
 
-A no-nonsense, manga-styled daily newspaper that only covers what you invest in and care about: frontier AI
-labs (OpenAI, Anthropic, Meta, ...), chips and compute, SpaceX and space, money and policy. It also has a
-"Brain Fuel" section of smart reads, a daily Sudoku, and a newsletter anyone can subscribe to that emails
-a five-minute version of the day's paper.
+[![Read The Signal](https://img.shields.io/badge/Read%20Live-thesignal--9vy.pages.dev-ff3b3b?style=for-the-badge&logo=safari&logoColor=white)](https://thesignal-9vy.pages.dev/)
+[![Daily Edition](https://img.shields.io/badge/Edition-Daily%20Briefing-black?style=for-the-badge)](https://thesignal-9vy.pages.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-gray?style=for-the-badge)](LICENSE)
 
-* **Backend:** Python (Starlette + uvicorn, SQLite, Jinja2, requests). No heavy framework, no ML dependencies.
-* **Frontend:** plain HTML/CSS/ES modules, GSAP + ScrollTrigger + canvas-confetti from a CDN (optional polish).
-* **Agents:** scout -> dedupe -> ranker -> editor (optional LLM) -> brain (smart reads) -> digest.
+---
 
-## Run it
+### 📰 [Read Today's Live Edition →](https://thesignal-9vy.pages.dev/)
 
-```bash
-./start.sh                      # creates .venv, installs deps, serves http://localhost:8000
-```
+---
 
-or by hand (Windows included):
+## What is The Signal?
 
-```bash
-python -m venv .venv && source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install -r backend/requirements.txt
-copy .env.example .env   # (cp on mac/linux) and edit it
-cd backend
-python -m app.cli serve
-```
+**The Signal** is a daily, manga-styled broadsheet newspaper engineered for people who care about where the world is actually moving. 
 
-On first start it builds today's edition in the background (the page shows clearly-labelled SAMPLE content
-until that finishes). Then open <http://localhost:8000>.
+Modern tech journalism is saturated with clickbait, superficial speculation, and press-release regurgitation. **The Signal** discards the fluff and focuses strictly on high-impact frontier tech: **foundation AI labs, physical compute infrastructure, reusable orbital rockets, and the capital driving them.**
 
-**Do this once:** `python -m app.cli check-sources`. The feed URLs in `backend/config/sources.yaml` were
-written from memory and have never been fetched; this command tells you which work. Fix or delete the rest.
+Crafted with tactile newsprint aesthetics, bold editorial typography, and high-density layout design, it delivers the gravitas of a classic morning broadsheet paired with the velocity of real-time intelligence.
 
-## Make it yours
+---
 
-| What | Where |
-|---|---|
-| Companies you track, topic keywords, how picky the paper is | `backend/config/topics.yaml` |
-| Where news and essays come from | `backend/config/sources.yaml` |
-| Send time, timezone, email settings, LLM key | `.env` (see `.env.example`) |
+## Editorial Beats
 
-Watchlist companies get a score boost and a clickable chip in the UI. Raise `selection.min_score` for a thinner
-paper. Everything is re-read on every run, so no restart is needed.
+Every morning, stories are gathered across hundreds of primary engineering blogs, research preprints, regulatory filings, and tier-one outlets. Every piece is ranked by technical substance and editorial weight:
 
-## Email newsletter
+* **⚡ Frontier Labs**  
+  The race toward artificial general intelligence and superintelligence. Ground-truth coverage of models, reasoning breakthroughs, agentic architectures, safety benchmarks, and strategic maneuvers from OpenAI, Anthropic, Google DeepMind, Meta AI, xAI, Mistral, and DeepSeek.
 
-* Visitors subscribe on the page (double opt-in: they click a link in a confirmation email).
-* Every day at `SEND_TIME` (in `TIMEZONE`) the app refreshes the edition and mails each confirmed subscriber a
-  condensed briefing: **The Big Three** (headline + why it matters), **Quick Hits**, **Brain Fuel**, and a link to the Sudoku.
-  The reading time in the header is measured from the actual text (225 words/min), not hard-coded.
-* Every email has a one-click unsubscribe (`List-Unsubscribe` header + a link). Nobody is ever sent the same
-  edition twice, and a failed address is retried, not skipped.
-* **With no SMTP configured, emails are written as `.eml` files to `backend/data/outbox/`.** Open one in
-  any mail client to see exactly what a subscriber would get. This is the default and needs no setup.
-* To send for real, set `SMTP_*` in `.env`. For Gmail use an App Password and `SMTP_HOST=smtp.gmail.com`, port 587.
-* Preview without sending: `python -m app.cli preview`, or click "See what the email looks like" on the page.
+* **⚙️ Chips & Compute**  
+  The physical bedrock of machine intelligence. Silicon lithography, packaging architectures, GPU clusters, custom TPUs/ASICs, hyperscaler gigawatt datacenters, and semiconductor supply chains spanning Nvidia, TSMC, ASML, AMD, and Cerebras.
 
-## Optional: an AI editor
+* **🚀 Space & Rockets**  
+  Leaving the planet, on schedule. Real updates on heavy-lift launch vehicles, orbital infrastructure, Starship flights, lunar programs, satellite constellations, and commercial space ventures across SpaceX, Blue Origin, Rocket Lab, and NASA.
 
-Set `ANTHROPIC_API_KEY` and a model rewrites headlines plainly, writes the one-line "why it matters", rates
-impact 1-5, picks the lead, and writes the hook for each smart read. Without a key the paper still works
-using extractive summaries. If the model call fails or returns garbage, the paper falls back automatically.
+* **🏛️ Big Tech & Platform Shifts**  
+  Platform dynamics, open-source weight releases, operating system shifts, and corporate maneuvers from Microsoft, Apple, Alphabet, Amazon, and Meta.
 
-## Commands
+* **💰 Money & Strategic Moves**  
+  Where capital and sovereign funds are deploying. Late-stage funding rounds, compute financing facilities, M&A, valuations, and the regulatory policies shaping the next century.
 
-```
-python -m app.cli serve           website + API + scheduler
-python -m app.cli run             build today's edition once
-python -m app.cli send            refresh and email subscribers who haven't had today's edition
-python -m app.cli preview         write the newsletter HTML to a file
-python -m app.cli check-sources   test every feed
-python -m app.cli sudoku          print a puzzle
-python -m unittest discover -s tests -t .      (from backend/) 70 tests
-```
+---
 
-If you would rather trigger sending from cron / a hosted scheduler than keep the server running all day,
-set `SCHEDULER_ENABLED=false` and run `python -m app.cli send` on your schedule.
+## Newspaper Features
 
-## HTTP API
+### 🎯 The Watchlist
+Filter the entire edition instantly with interactive company chips. Track targeted updates on high-conviction entities—like **OpenAI**, **Anthropic**, **Meta**, and **SpaceX**—with a single tap.
 
-| Endpoint | |
-|---|---|
-| `GET /api/edition[?date=YYYY-MM-DD]` | the edition JSON (latest, or a past date; SAMPLE if none built yet) |
-| `GET /api/editions` | list of past editions |
-| `GET /api/sudoku?difficulty=easy\|medium\|hard[&mode=random]` | today's puzzle (same for everyone) or a random one |
-| `POST /api/subscribe` `{email, name?}` | start a subscription |
-| `GET /api/confirm?token=` / `GET,POST /api/unsubscribe?token=` | double opt-in / opt-out |
-| `GET /api/email-preview` | the newsletter as HTML |
-| `POST /api/admin/run`, `POST /api/admin/send`, `GET /api/admin/status` | `Authorization: Bearer $ADMIN_TOKEN`; disabled if the token is unset |
+### 🧠 Brain Fuel
+Beyond the day's breaking cycle: a curated selection of smart reads, engineering deep dives, historical retrospectives, and whitepapers with accurate, measured reading times.
 
-## Deploying
+### ☕ The Play Section
+A classic newspaper tradition preserved. Take a five-minute break from the feed with:
+* **Daily Sudoku:** A freshly minted puzzle every day with multiple difficulties, smart conflict detection, note-taking, undo history, and offline local progress saving.
+* **Catch the Apple (Arcade):** A responsive, tactile mini-arcade break directly on the newsprint.
 
-Needs one always-on Python process (the scheduler lives inside it) and a persistent disk for
-`backend/data/` (the SQLite file holds your subscribers). A `Dockerfile` is included. Set `BASE_URL` to your public URL (it is
-used in confirm / unsubscribe links), put it behind HTTPS, and set `TRUST_PROXY=true` only if your own reverse proxy sets `X-Forwarded-For`.
+### 🌓 Ink & Paper Themes
+Switch seamlessly between an authentic warm aged newsprint mode (**Paper**) and a high-contrast dark room mode (**Ink**).
 
-## Contributing
+### 📬 The Five-Minute Morning Briefing
+Prefer your news delivered? The Signal provides a double-opt-in daily morning newsletter sent directly to your inbox:
+* **The Big Three:** The three most consequential stories of the day with executive "Why it matters" breakdowns.
+* **Quick Hits:** One-line executive summaries of essential secondary developments.
+* **Brain Fuel & Daily Puzzle:** A long-read essay recommendation and a link straight to today's Sudoku.
+* *Zero trackers. Zero sponsored fluff. Instant one-click unsubscribe.*
 
-Contributions, feed suggestions, and improvements are welcome!
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+---
 
-## License
+## Experience The Signal
 
-Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
+The latest edition is live and updated daily. 
+
+👉 **[Open The Signal (thesignal-9vy.pages.dev)](https://thesignal-9vy.pages.dev/)**
