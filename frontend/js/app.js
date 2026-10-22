@@ -631,7 +631,9 @@ function renderEdition(ed) {
 
 async function loadEdition(date) {
   try {
-    renderEdition(await api(date ? `/api/edition?date=${encodeURIComponent(date)}` : '/api/edition'));
+    const data = await api(date ? `/api/edition?date=${encodeURIComponent(date)}` : '/api/edition');
+    if (!data) throw new Error('Empty response from edition API.');
+    renderEdition(data);
   } catch (err) {
     const empty = $('#empty');
     empty.hidden = false;
