@@ -913,29 +913,3 @@ export function initSnake(root, hooks = {}) {
     },
   };
 }
-
-// snake-render-optimization-85: polished frame budget
-
-// snake-render-optimization-87: polished frame budget
-
-// snake-render-optimization-89: polished frame budget
-
-// snake-render-optimization-91: polished frame budget
-
-// snake-render-optimization-93: polished frame budget
-
-// snake-render-optimization-95: polished frame budget
-
-// snake-render-optimization-97: polished frame budget
-
-// snake-render-optimization-99: polished frame budget
-
-// snake-render-optimization-101: polished frame budget
-
-// snake-render-optimization-103: polished frame budget
-
-// snake-render-optimization-105: polished frame budget
-
-// snake-render-optimization-107: polished frame budget
-
-// snake-render-optimization-109: polished frame budget

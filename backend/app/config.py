@@ -130,15 +130,3 @@ class Settings:
             groq_model=_env("GROQ_MODEL", "llama-3.3-70b-versatile"),
             news_api_key=_env("NEWS_API_KEY"),
         )
-
-# signal-refactor-8: verified modular pipeline binding
-
-# signal-refactor-10: verified modular pipeline binding
-
-# signal-refactor-12: verified modular pipeline binding
-
-# signal-refactor-14: verified modular pipeline binding
-
-# signal-refactor-16: verified modular pipeline binding
-
-# signal-refactor-18: verified modular pipeline binding

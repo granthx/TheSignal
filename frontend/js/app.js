@@ -1,5 +1,6 @@
 import { h, clear, safeUrl, timeAgo, fmtDate, store, reducedMotion } from './dom.js';
 import { initSudoku } from './sudoku.js';
+import { initSnake } from './snake.js';
 import { initNewsletter } from './newsletter.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -89,6 +90,15 @@ function renderMasthead(ed) {
   document.title = `The Signal · ${fmtDate(ed.date)}`;
 }
 
+function applyFilter(name) {
+  state.filter = state.filter === name ? null : name;
+  const ed = state.edition;
+  renderChips(ed);
+  renderNav(ed);
+  renderBody();
+  observeNav();
+}
+
 function renderChips(ed) {
   const box = clear($('#chips'));
   const counts = ed.watchlist || {};
@@ -101,7 +111,7 @@ function renderChips(ed) {
       {
         class: `chip${n ? '' : ' zero'}`, type: 'button', 'aria-pressed': state.filter === name ? 'true' : 'false',
         title: n ? `Show only ${name} stories` : `Nothing on ${name} today`,
-        onclick: () => { state.filter = state.filter === name ? null : name; renderBody(); renderChips(ed); },
+        onclick: () => applyFilter(name),
       },
       name.toUpperCase(), h('span', { class: 'n', text: String(n) }),
     );
@@ -109,29 +119,160 @@ function renderChips(ed) {
   }
 }
 
+const leadCarousel = {
+  stories: [],
+  currentIndex: 0,
+  timerId: null,
+  paused: false,
+};
+
+function clearLeadTimer() {
+  if (leadCarousel.timerId) {
+    clearInterval(leadCarousel.timerId);
+    leadCarousel.timerId = null;
+  }
+}
+
+function getLeadStories(ed) {
+  const all = [ed.lead, ...ed.sections.flatMap((s) => s.stories)].filter(Boolean);
+  const byId = new Map(all.map((s) => [s.id, s]));
+  const topIds = (ed.top_ids || []).map((id) => byId.get(id)).filter(Boolean);
+  const candidates = [];
+  if (ed.lead) candidates.push(ed.lead);
+  for (const s of topIds) {
+    if (!candidates.some((c) => c.id === s.id)) candidates.push(s);
+  }
+  for (const s of all) {
+    if (!candidates.some((c) => c.id === s.id)) candidates.push(s);
+    if (candidates.length >= 5) break;
+  }
+  return candidates.filter(matchesFilter).slice(0, 5);
+}
+
 function renderLead(ed) {
+  clearLeadTimer();
   const wrap = clear($('#lead-wrap'));
-  const lead = ed.lead;
-  if (!lead || !matchesFilter(lead)) return;
-  const level = Math.max(1, Math.min(5, Number(lead.impact) || 1));
-  wrap.append(
-    h(
-      'article', { class: 'lead', dataset: { id: lead.id } },
-      h('div', { class: 'lead-main' },
-        h('span', { class: 'sfx', text: 'TOP STORY!' }),
-        h('h2', {}, h('a', { href: safeUrl(lead.url), target: '_blank', rel: 'noopener noreferrer', text: lead.headline })),
-        whyBubble(lead),
-        entityTags(lead),
-        metaLine(lead, { withImpact: false }),
+  const stories = getLeadStories(ed);
+  if (!stories.length) return;
+
+  leadCarousel.stories = stories;
+  leadCarousel.currentIndex = 0;
+  leadCarousel.paused = false;
+
+  const article = h('article', { class: 'lead' });
+  const timerTrack = h('div', { class: 'lead-timer-track', title: 'New story every 4 seconds' });
+  const timerBar = h('div', { class: 'lead-timer-bar running' });
+  timerTrack.append(timerBar);
+
+  const mainCol = h('div', { class: 'lead-main' });
+  const sideCol = h('aside', { class: 'lead-side', 'aria-label': 'Story rating' });
+
+  article.append(timerTrack, mainCol, sideCol);
+  wrap.append(article);
+
+  function syncBigFive(index) {
+    const listItems = document.querySelectorAll('.top5 li');
+    listItems.forEach((li, i) => {
+      li.classList.toggle('active', i === index);
+    });
+  }
+
+  function displayStory(index, animated = true) {
+    if (!stories[index]) return;
+    const story = stories[index];
+    const level = Math.max(1, Math.min(5, Number(story.impact) || 1));
+
+    if (animated) {
+      article.classList.add('is-transitioning');
+      setTimeout(() => article.classList.remove('is-transitioning'), 220);
+    }
+
+    article.dataset.id = story.id;
+
+    // Reset 4-second timer bar animation
+    timerBar.classList.remove('running');
+    void timerBar.offsetWidth; // trigger reflow
+    if (!leadCarousel.paused) {
+      timerBar.classList.add('running');
+    }
+
+    clear(mainCol);
+    const badgeRow = h('div', { class: 'lead-badge-row' },
+      h('div', { class: 'lead-badge-group' },
+        h('span', { class: 'sfx', text: index === 0 ? 'TOP STORY!' : `HOT STORY #${index + 1}` }),
       ),
-      h('aside', { class: 'lead-side', 'aria-label': 'Story rating' },
-        h('div', { class: 'big-impact', 'aria-hidden': 'true' }, String(level), h('small', { text: '/5' })),
-        h('div', { class: 'mono small' }, 'IMPACT RATING'),
-        impactBars(level),
-        h('div', { class: 'mono small', text: lead.beat && ed.beat_titles ? (ed.beat_titles[lead.beat] || '').toUpperCase() : '' }),
+      h('div', { class: 'lead-controls' },
+        h('span', { class: 'lead-counter mono', text: `${index + 1} / ${stories.length}` }),
+        h('button', {
+          class: 'lead-nav-btn prev',
+          type: 'button',
+          'aria-label': 'Previous story',
+          onclick: (e) => { e.preventDefault(); prevStory(); }
+        }, '‹'),
+        h('button', {
+          class: 'lead-nav-btn next',
+          type: 'button',
+          'aria-label': 'Next story',
+          onclick: (e) => { e.preventDefault(); nextStory(); }
+        }, '›'),
       ),
-    ),
-  );
+    );
+
+    const elements = [
+      badgeRow,
+      h('h2', {}, h('a', { href: safeUrl(story.url), target: '_blank', rel: 'noopener noreferrer', text: story.headline })),
+      whyBubble(story),
+      entityTags(story),
+      metaLine(story, { withImpact: false }),
+    ].filter(Boolean);
+    mainCol.append(...elements);
+
+    clear(sideCol);
+    sideCol.append(
+      h('div', { class: 'big-impact', 'aria-hidden': 'true' }, String(level), h('small', { text: '/5' })),
+      h('div', { class: 'mono small' }, 'IMPACT RATING'),
+      impactBars(level),
+      h('div', { class: 'mono small', text: story.beat && ed.beat_titles ? (ed.beat_titles[story.beat] || '').toUpperCase() : '' }),
+    );
+
+    syncBigFive(index);
+  }
+
+  function nextStory() {
+    leadCarousel.currentIndex = (leadCarousel.currentIndex + 1) % stories.length;
+    displayStory(leadCarousel.currentIndex, true);
+  }
+
+  function prevStory() {
+    leadCarousel.currentIndex = (leadCarousel.currentIndex - 1 + stories.length) % stories.length;
+    displayStory(leadCarousel.currentIndex, true);
+  }
+
+  // Hover pauses 4-second rotation
+  article.addEventListener('mouseenter', () => {
+    leadCarousel.paused = true;
+    timerBar.style.animationPlayState = 'paused';
+  });
+  article.addEventListener('mouseleave', () => {
+    leadCarousel.paused = false;
+    timerBar.style.animationPlayState = 'running';
+  });
+
+  // 4-second rotation cycle
+  if (stories.length > 1) {
+    leadCarousel.timerId = setInterval(() => {
+      if (!leadCarousel.paused) {
+        nextStory();
+      }
+    }, 4000);
+  }
+
+  window.__selectLeadStory = (idx) => {
+    leadCarousel.currentIndex = idx;
+    displayStory(idx, true);
+  };
+
+  displayStory(0, false);
 }
 
 function renderTop(ed) {
@@ -141,15 +282,40 @@ function renderTop(ed) {
   const byId = new Map(all.map((s) => [s.id, s]));
   const top = (ed.top_ids || []).map((id) => byId.get(id)).filter(Boolean).slice(0, 5);
   if (top.length < 3) return;
+
+  const ol = h('ol', {});
+  top.forEach((s, i) => {
+    const li = h('li', {
+      class: i === (leadCarousel.currentIndex || 0) ? 'active' : '',
+      dataset: { index: String(i) },
+      onclick: () => {
+        if (window.__selectLeadStory) {
+          window.__selectLeadStory(i);
+        }
+      }
+    },
+      h('span', { class: 'rank', 'aria-hidden': 'true', text: String(i + 1) }),
+      h('a', {
+        href: safeUrl(s.url),
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        text: s.headline,
+        onclick: (e) => {
+          if (window.__selectLeadStory) window.__selectLeadStory(i);
+        }
+      }),
+      h('span', { class: 'src', text: s.source }),
+    );
+    ol.append(li);
+  });
+
   wrap.append(
     h('section', { class: 'top5', 'aria-label': 'Top five by impact' },
-      h('h2', { text: 'THE BIG FIVE' }),
-      h('ol', {}, top.map((s, i) =>
-        h('li', {},
-          h('span', { class: 'rank', 'aria-hidden': 'true', text: String(i + 1) }),
-          h('a', { href: safeUrl(s.url), target: '_blank', rel: 'noopener noreferrer', text: s.headline }),
-          h('span', { class: 'src', text: s.source }),
-        ))),
+      h('div', { class: 'top5-head' },
+        h('h2', { text: 'THE BIG FIVE' }),
+        h('span', { class: 'mono top5-hint', text: 'CLICK ANY STORY TO SPOTLIGHT' }),
+      ),
+      ol,
     ),
   );
 }
@@ -226,9 +392,16 @@ function renderReads(ed) {
 function renderNav(ed) {
   const nav = clear($('#nav'));
   const links = [];
-  if (ed.lead) links.push(['#front-page', 'FRONT PAGE']);
-  for (const sec of ed.sections) links.push([`#ch-${sec.id}`, sec.title.toUpperCase()]);
-  if ((ed.reads || []).length) links.push(['#reads-wrap', 'BRAIN FUEL']);
+  if ((ed.lead && matchesFilter(ed.lead)) || !state.filter) {
+    links.push(['#front-page', 'FRONT PAGE']);
+  }
+  const visible = visibleSections(ed);
+  for (const sec of visible) {
+    links.push([`#ch-${sec.id}`, sec.title.toUpperCase()]);
+  }
+  if ((ed.reads || []).length && !state.filter) {
+    links.push(['#reads-wrap', 'BRAIN FUEL']);
+  }
   links.push(['#play', 'PLAY']);
   for (const [href, label] of links) nav.append(h('a', { href, text: label }));
   nav.append(h('a', { class: 'cta', href: '#subscribe', text: 'GET IT DAILY' }));
@@ -275,178 +448,6 @@ function animateBody() {
     ScrollTrigger.batch(targets, { start: 'top 94%', once: true, onEnter: reveal });
   } else {
     reveal(targets);
-  }
-}
-
-function splitLogo() {
-  const logo = $('#logo');
-  if (!logo || logo.dataset.split) return;
-  logo.dataset.split = '1';
-  const text = logo.textContent;
-  clear(logo);
-  [...text].forEach((c) => logo.append(h('span', { class: 'ch', 'aria-hidden': 'true', text: c === ' ' ? ' ' : c })));
-  if (window.gsap && !reducedMotion()) {
-    window.gsap.from('#logo .ch', { y: -60, rotate: () => window.gsap.utils.random(-25, 25), autoAlpha: 0, duration: 0.55, stagger: 0.045, ease: 'back.out(2.2)' });
-  }
-}
-
-let navScrollHandler = null;
-function observeNav() {
-  if (navScrollHandler) window.removeEventListener('scroll', navScrollHandler);
-  const links = new Map([...document.querySelectorAll('#nav a[href^="#"]')].map((a) => [a.getAttribute('href').slice(1), a]));
-  const observedElements = [...links.keys()].map((id) => document.getElementById(id)).filter(Boolean);
-
-  let ticking = false;
-  let clickedLockUntil = 0;
-
-  const updateActiveNav = () => {
-    if (Date.now() < clickedLockUntil) return;
-    const headerThreshold = 120;
-    let currentId = null;
-
-    // Check if bottom of page is reached
-    const atBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 60);
-    if (atBottom && observedElements.length) {
-      currentId = observedElements[observedElements.length - 1].id;
-    } else {
-      for (const el of observedElements) {
-        const top = el.getBoundingClientRect().top;
-        if (top <= headerThreshold) {
-          currentId = el.id;
-        }
-      }
-    }
-
-    if (!currentId && observedElements.length) {
-      currentId = observedElements[0].id;
-    }
-
-    links.forEach((a, id) => {
-      a.classList.toggle('on', id === currentId);
-    });
-  };
-
-  const onScroll = () => {
-    if (!ticking) {
-      requestAnimationFrame(() => {
-        updateActiveNav();
-        ticking = false;
-      });
-      ticking = true;
-    }
-  };
-
-  links.forEach((a, id) => {
-    a.addEventListener('click', (e) => {
-      const target = document.getElementById(id);
-      if (target) {
-        e.preventDefault();
-        clickedLockUntil = Date.now() + 500;
-        links.forEach((other) => other.classList.remove('on'));
-        a.classList.add('on');
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        history.replaceState(null, '', `#${id}`);
-      }
-    });
-  });
-
-  navScrollHandler = onScroll;
-  window.addEventListener('scroll', navScrollHandler, { passive: true });
-  updateActiveNav();
-}
-
-function trackProgress() {
-  const bar = $('#progress');
-  const update = () => {
-    const max = document.documentElement.scrollHeight - innerHeight;
-    bar.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`;
-  };
-  addEventListener('scroll', update, { passive: true });
-  addEventListener('resize', update);
-  update();
-}
-
-/* ------------------------------------------------------------------ orchestration */
-function renderBody() {
-  const ed = state.edition;
-  renderLead(ed);
-  renderTop(ed);
-  renderChapters(ed);
-  renderReads(ed);
-  animateBody();
-}
-
-function renderEdition(ed) {
-  state.edition = ed;
-  state.filter = null;
-  renderTicker(ed);
-  renderMasthead(ed);
-  renderChips(ed);
-  renderNav(ed);
-  renderBody();
-  observeNav();
-  renderFooter(ed);
-}
-
-async function loadEdition(date) {
-  try {
-    renderEdition(await api(date ? `/api/edition?date=${encodeURIComponent(date)}` : '/api/edition'));
-  } catch (err) {
-    const empty = $('#empty');
-    empty.hidden = false;
-    clear(empty).append(h('b', { text: 'COULDN\'T LOAD THE PAPER' }), h('span', { text: err.message }));
-  }
-}
-
-async function loadArchive(currentDate) {
-  const select = clear($('#archive'));
-  try {
-    const { editions } = await api('/api/editions');
-    if (!editions.length) { $('.archive').hidden = true; return; }
-    for (const e of editions) {
-      select.append(h('option', { value: e.date, selected: e.date === currentDate, text: `${fmtDate(e.date)}  ·  #${e.edition_no}` }));
-    }
-    select.onchange = () => loadEdition(select.value);
-  } catch { $('.archive').hidden = true; }
-}
-
-function initTheme() {
-  const btn = $('#theme');
-  const apply = (theme) => {
-    document.documentElement.dataset.theme = theme;
-    btn.setAttribute('aria-pressed', theme === 'ink' ? 'true' : 'false');
-    btn.textContent = theme === 'ink' ? '◑ PAPER' : '◐ INK';
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'ink' ? '#0f0f12' : '#f6f3ea');
-  };
-  const saved = prefs.get('signal.theme');
-  apply(saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'ink' : 'paper'));
-  btn.addEventListener('click', () => {
-    const next = document.documentElement.dataset.theme === 'ink' ? 'paper' : 'ink';
-    apply(next);
-    prefs.set('signal.theme', next);
-  });
-}
-
-async function main() {
-  initTheme();
-  splitLogo();
-  trackProgress();
-
-  try { state.meta = await api('/api/meta'); } catch { state.meta = null; }
-  const confetti = (opts) => { if (window.confetti && !reducedMotion()) window.confetti(opts); };
-  initSudoku($('#sudoku'), { confetti });
-  initNewsletter({ meta: state.meta });
-
-  const requested = new URLSearchParams(location.search).get('date');
-  await loadEdition(requested);
-  loadArchive(state.edition?.date);
-
-  if (location.hash && location.hash.length > 1) {
-    document.getElementById(location.hash.slice(1))?.scrollIntoView();
-  }
-}
-
-main();    reveal(targets);
   }
 }
 
@@ -635,17 +636,132 @@ async function loadEdition(date) {
     const empty = $('#empty');
     empty.hidden = false;
     clear(empty).append(h('b', { text: 'COULDN\'T LOAD THE PAPER' }), h('span', { text: err.message }));
+  }
+}
 
-/* signal-perf-110: touch/scroll optimization */
+async function loadArchive(currentDate) {
+  const select = clear($('#archive'));
+  try {
+    const { editions } = await api('/api/editions');
+    if (!editions.length) { $('.archive').hidden = true; return; }
+    for (const e of editions) {
+      select.append(h('option', { value: e.date, selected: e.date === currentDate, text: `${fmtDate(e.date)}  ·  #${e.edition_no}` }));
+    }
+    select.onchange = () => loadEdition(select.value);
+  } catch { $('.archive').hidden = true; }
+}
 
-/* signal-perf-112: touch/scroll optimization */
+function initTheme() {
+  const btn = $('#theme');
+  const apply = (theme) => {
+    document.documentElement.dataset.theme = theme;
+    btn.setAttribute('aria-pressed', theme === 'ink' ? 'true' : 'false');
+    btn.textContent = theme === 'ink' ? '◑ PAPER' : '◐ INK';
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'ink' ? '#0f0f12' : '#f6f3ea');
+  };
+  const saved = prefs.get('signal.theme');
+  apply(saved || (matchMedia('(prefers-color-scheme: dark)').matches ? 'ink' : 'paper'));
+  btn.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'ink' ? 'paper' : 'ink';
+    apply(next);
+    prefs.set('signal.theme', next);
+  });
+}
 
-/* signal-perf-114: touch/scroll optimization */
+function initUpdateBtn() {
+  const btn = $('#btn-update');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    const originalText = btn.textContent;
+    btn.classList.add('is-updating');
+    btn.textContent = '⚡ REFRESHING...';
+    try {
+      const res = await fetch('/api/refresh', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error((data && data.error) || `Update failed (${res.status})`);
+      }
+      btn.textContent = '✓ UPDATED!';
+      renderEdition(data);
+      loadArchive(data.date);
+      setTimeout(() => {
+        btn.classList.remove('is-updating');
+        btn.textContent = originalText;
+      }, 2500);
+    } catch (err) {
+      alert(err.message);
+      btn.classList.remove('is-updating');
+      btn.textContent = originalText;
+    }
+  });
+}
 
-/* signal-perf-116: touch/scroll optimization */
+function initGameTabs(snakeInstance) {
+  const tabSudoku = $('#btn-tab-sudoku');
+  const tabSnake = $('#btn-tab-snake');
+  const sudokuPane = $('#sudoku');
+  const snakePane = $('#snake-game');
 
-/* signal-perf-118: touch/scroll optimization */
+  if (!tabSudoku || !tabSnake || !sudokuPane || !snakePane) return;
 
-/* signal-perf-120: touch/scroll optimization */
+  tabSudoku.addEventListener('click', () => {
+    tabSudoku.classList.add('active');
+    tabSudoku.setAttribute('aria-selected', 'true');
+    tabSnake.classList.remove('active');
+    tabSnake.setAttribute('aria-selected', 'false');
 
-/* signal-perf-122: touch/scroll optimization */
+    sudokuPane.hidden = false;
+    snakePane.hidden = true;
+    if (snakeInstance && snakeInstance.pause) snakeInstance.pause();
+  });
+
+  tabSnake.addEventListener('click', () => {
+    tabSnake.classList.add('active');
+    tabSnake.setAttribute('aria-selected', 'true');
+    tabSudoku.classList.remove('active');
+    tabSudoku.setAttribute('aria-selected', 'false');
+
+    snakePane.hidden = false;
+    sudokuPane.hidden = true;
+  });
+}
+
+async function main() {
+  initTheme();
+  initUpdateBtn();
+  splitLogo();
+  trackProgress();
+
+  try { state.meta = await api('/api/meta'); } catch { state.meta = null; }
+  const confetti = (opts) => { if (window.confetti && !reducedMotion()) window.confetti(opts); };
+  initSudoku($('#sudoku'), { confetti });
+  const snakeInstance = initSnake($('#snake-game'), { confetti });
+  initGameTabs(snakeInstance);
+  initNewsletter({ meta: state.meta });
+
+  const requested = new URLSearchParams(location.search).get('date');
+  await loadEdition(requested);
+  loadArchive(state.edition?.date);
+
+  if (location.hash && location.hash.length > 1) {
+    const id = location.hash.slice(1);
+    const scrollTarget = () => {
+      const el = document.getElementById(id);
+      if (el) {
+        const nav = $('#nav');
+        const navH = nav ? nav.getBoundingClientRect().height : 50;
+        const rect = el.getBoundingClientRect();
+        const topY = Math.max(0, rect.top + (window.scrollY || window.pageYOffset || 0) - navH - 14);
+        window.scrollTo({ top: topY, behavior: 'instant' });
+      }
+    };
+    scrollTarget();
+    setTimeout(scrollTarget, 120);
+    setTimeout(scrollTarget, 350);
+  }
+}
+
+main();
