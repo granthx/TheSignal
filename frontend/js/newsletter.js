@@ -1,4 +1,4 @@
-import { h } from './dom.js';
+import { h, apiUrl } from './dom.js';
 
 export function initNewsletter({ meta } = {}) {
   const form = document.getElementById('sub-form');
@@ -29,7 +29,7 @@ export function initNewsletter({ meta } = {}) {
     const label = btn.textContent;
     btn.textContent = 'SENDING…';
     try {
-      const res = await fetch('/api/subscribe', {
+      const res = await fetch(apiUrl('/api/subscribe'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, name: data.get('name') || '', website: data.get('website') || '' }),
@@ -50,9 +50,9 @@ export function initNewsletter({ meta } = {}) {
   const dialog = document.getElementById('preview');
   const frame = document.getElementById('preview-frame');
   document.getElementById('preview-btn').addEventListener('click', () => {
-    frame.src = '/api/email-preview';
+    frame.src = apiUrl('/api/email-preview');
     if (typeof dialog.showModal === 'function') dialog.showModal();
-    else window.open('/api/email-preview', '_blank', 'noopener');
+    else window.open(apiUrl('/api/email-preview'), '_blank', 'noopener');
   });
   document.getElementById('preview-close').addEventListener('click', () => dialog.close());
   dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });

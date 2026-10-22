@@ -1,4 +1,4 @@
-import { h, clear, fmtClock, store } from './dom.js';
+import { h, clear, fmtClock, store, apiUrl } from './dom.js';
 
 const DIFFS = ['easy', 'medium', 'hard'];
 const prefs = store();
@@ -282,7 +282,7 @@ export function initSudoku(root, hooks = {}) {
     say('Setting up the grid…');
     diffBtns.concat(kindBtns).forEach((b) => { b.disabled = true; });
     try {
-      const res = await fetch(`/api/sudoku?difficulty=${diff}${kind === 'random' ? '&mode=random' : ''}`);
+      const res = await fetch(apiUrl(`/api/sudoku?difficulty=${diff}${kind === 'random' ? '&mode=random' : ''}`));
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       newGame(await res.json());
     } catch {

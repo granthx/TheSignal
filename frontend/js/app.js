@@ -1,4 +1,4 @@
-import { h, clear, safeUrl, timeAgo, fmtDate, store, reducedMotion } from './dom.js';
+import { h, clear, safeUrl, timeAgo, fmtDate, store, reducedMotion, apiUrl } from './dom.js';
 import { initSudoku } from './sudoku.js';
 import { initSnake } from './snake.js';
 import { initNewsletter } from './newsletter.js';
@@ -10,7 +10,8 @@ const state = { edition: null, filter: null, meta: null };
 document.documentElement.classList.add(window.gsap ? 'has-gsap' : 'no-gsap');
 
 async function api(path) {
-  const res = await fetch(path, { headers: { Accept: 'application/json' } });
+  const url = apiUrl(path);
+  const res = await fetch(url, { headers: { Accept: 'application/json' } });
   let data = null;
   try { data = await res.json(); } catch { /* not JSON */ }
   if (!res.ok) throw new Error((data && data.error) || `Request failed (${res.status})`);
@@ -678,7 +679,7 @@ function initUpdateBtn() {
     btn.classList.add('is-updating');
     btn.textContent = '⚡ REFRESHING...';
     try {
-      const res = await fetch('/api/refresh', {
+      const res = await fetch(apiUrl('/api/refresh'), {
         method: 'POST',
         headers: { Accept: 'application/json' },
       });

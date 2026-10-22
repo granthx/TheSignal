@@ -1,6 +1,15 @@
 // Tiny DOM helpers. Everything is built with textContent / setAttribute, never innerHTML,
 // so feed content (untrusted) can't inject markup.
 
+export const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? ''
+  : 'https://the-signal-e5de.vercel.app';
+
+export function apiUrl(path) {
+  if (!path || path.startsWith('http://') || path.startsWith('https://')) return path;
+  return `${API_BASE}${path.startsWith('/') ? path : '/' + path}`;
+}
+
 export function h(tag, attrs = {}, ...kids) {
   const el = document.createElement(tag);
   for (const [key, value] of Object.entries(attrs || {})) {
