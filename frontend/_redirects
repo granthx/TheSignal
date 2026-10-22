@@ -1,0 +1,3 @@
+# Cloudflare Pages API proxy to Vercel backend
+# Replace YOUR-BACKEND-PROJECT.vercel.app with your live Vercel URL
+/api/*  https://the-signal-api.vercel.app/api/:splat  200

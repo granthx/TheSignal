@@ -14,6 +14,7 @@ import anyio
 from starlette.applications import Starlette
 from starlette.datastructures import MutableHeaders
 from starlette.middleware import Middleware
+from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, JSONResponse, Response
 from starlette.routing import Mount, Route
@@ -299,7 +300,14 @@ def create_app(settings: Settings | None = None, services: Services | None = Non
         for task in tasks:
             task.cancel()
 
-    app = Starlette(routes=routes, middleware=[Middleware(SecurityHeaders)], lifespan=lifespan)
+    app = Starlette(
+        routes=routes,
+        middleware=[
+            Middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]),
+            Middleware(SecurityHeaders),
+        ],
+        lifespan=lifespan,
+    )
     app.state.services = services
     app.state.settings = settings
     return app
